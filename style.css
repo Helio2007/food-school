@@ -383,11 +383,57 @@ fieldset legend {
 .order .tbl-full tr th {
   border-top: 1px solid #bfbbbb;
 }
-.form fieldset,
-.contact fieldset,
-.login fieldset {
-  border: 1px solid #bfbbbb;
+/* LOGIN */
+
+.login-container {
+  width: 50%;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
+
+.login-container input,
+.login-container textarea {
+  width: 80%;
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-container button {
+  width: 70%;
+  padding: 12px;
+  background-color: red;
+  margin-bottom: 20px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid black;
+}
+
+
+.login-container button:hover {
+  background-color: white;
+  color: red;
+  border-color: red;
+  transform: scale(1.1);
+}
+
+/* LOGIN END */
+
+
+
+
 .form {
   box-shadow: 0 0 20px 2px #1a171780;
   width: 70%;
@@ -410,10 +456,68 @@ fieldset legend {
 }
 /* Order Page Style End */
 
+
 /* Contact Page Style Start */
-.contact,
-.login {
-  padding: 65px 0;
+.form {
+  box-shadow: 0 0 20px 2px #1a171780;
+  width: 64%;
+  padding: 10px 0;
+  margin: 0 auto;
+  border-radius: 6px;
+}
+.form input,
+.form textarea {
+  width: 98%;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #bfbbbb;
+  margin-bottom: 25px;
+}
+.form input[type="submit"] {
+  width: 30%;
+  border-radius: 10px;
+}
+
+.contact-form {
+width: 50%;
+margin: 0 auto;
+padding: 20px;
+background: white;
+border-radius: 10px;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+margin-bottom: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+width: 90%;
+padding: 10px;
+margin-bottom: 15px;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+
+.contact-form button {
+width: 95%;
+padding: 12px;
+background-color: red;
+color: white;
+font-size: 18px;
+font-weight: bold;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: all 0.3s ease;
+border: 2px solid black;
+}
+
+
+.contact-form button:hover {
+background-color: white;
+color: red;
+border-color: red;
+transform: scale(1.1);
 }
 #gmap_canvas {
   width: 100%;
