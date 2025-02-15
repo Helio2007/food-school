@@ -121,21 +121,7 @@ h3 {
   margin-top: -10px;
   margin-bottom: 15px;
 }
-.log-in-fieldset {
-  border: 5px solid;
-  border-image: linear-gradient(to right, rgb(255,43,123), rgb(0,32,23)) 1;
-  margin: 40px;
-  padding: 25px;
-  border-radius: 5px;
-  padding-bottom: 0;
-  
-}
 
-
-fieldset legend {
-  font-size: 23px;
-  color: #2f3542;
-}
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -150,7 +136,7 @@ fieldset legend {
 
 /* Navigation Section Style */
 .navbar {
-  margin-top: 80px;
+  margin-top: 120px;
 }
 .navbar-menu {
   padding: 10px 0;
@@ -436,24 +422,24 @@ fieldset legend {
 /* LOGIN */
 
 .login-container {
-  width: 50%;
+  width: 40%;
   margin: 0 auto;
   padding: 20px;
   background: white;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 50px;
+  margin-bottom: 30px;
 }
 
 .login-container input,
 .login-container textarea {
-  width: 80%;
+  width: 90%;
   padding: 10px;
   margin-top: 15px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
 }
 
 .login-container button {
@@ -480,57 +466,57 @@ fieldset legend {
 }
 
 /* LOGIN END */
+/* Order button*/
 
 
 
 
-.form {
-  box-shadow: 0 0 20px 2px #1a171780;
-  width: 70%;
-  padding: 7px 0;
-  margin: 0 auto;
-  border-radius: 3px;
+.order-form {
+width: 40%;
+margin: 0 auto;
+padding: 20px;
+background: white;
+border-radius: 10px;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+margin-bottom: 20px;
 }
-.form input,
-.form textarea {
-  width: 98%;
-  padding: 8px;
-  font-size: 16px;
+
+.order-form input,
+.order-form textarea {
+width: 87%;
+padding: 10px;
+margin-bottom: 15px;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+
+.btn-order {
+  width: 40%;
+  padding: 12px;
+  background-color: red;
+  margin-bottom: 20px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
   border-radius: 5px;
-  border: 1px solid #bfbbbb;
-  margin-bottom: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid black;
 }
-.form input[type="submit"] {
-  width: 30%;
-  border-radius: 5px;
+.btn-order:hover {
+  background-color: white;
+  color: red;
+  border: 2px solid black;
+  transform: scale(1.1);
 }
-/* Order Page Style End */
 
-
+/* Order button end */
 /* Contact Page Style Start */
-.form {
-  box-shadow: 0 0 20px 2px #1a171780;
-  width: 64%;
-  padding: 10px 0;
-  margin: 0 auto;
-  border-radius: 6px;
-}
-.form input,
-.form textarea {
-  width: 98%;
-  padding: 8px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #bfbbbb;
-  margin-bottom: 25px;
-}
-.form input[type="submit"] {
-  width: 30%;
-  border-radius: 10px;
-}
+
 
 .contact-form {
-width: 50%;
+width: 40%;
 margin: 0 auto;
 padding: 20px;
 background: white;
