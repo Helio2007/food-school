@@ -50,7 +50,8 @@ $(function () {
 /**
  * Explore food
  */
-const scrollContainer = document.getElementById("scroll-container");
+
+const scrollContainer = document.querySelector(".scroll-container");
 let isDown = false;
 let startX;
 let scrollLeft;
@@ -71,6 +72,9 @@ scrollContainer.addEventListener("mouseup", () => {
     isDown = false;
     scrollContainer.classList.remove("active");
 });
+
+
+
 
 scrollContainer.addEventListener("mousemove", (e) => {
     if (!isDown) return;

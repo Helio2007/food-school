@@ -86,7 +86,15 @@ a:hover {
 }
 .img-responsive {
   width: 100%;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%; /* Ensures it fills the container */
+    height: 250px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image fills the space without distortion */
+    border-radius: 15px; /* Optional: Adds rounded corners */
+  }
 .img-curve {
   border-radius: 10px;
 }
@@ -233,6 +241,16 @@ h3 {
 /* Navigation Section Style End */
 
 /* Food Search Section Style Start */
+
+.icon{
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden
+}
 .food-search {
   background-image: url(../img/search-bg.jpg);
   background-size: cover;
@@ -259,12 +277,15 @@ h3 {
 /* Categories Section Style Start */
 .scroll-container {
   display: flex;
-  overflow-x: hidden;
+  overflow-x: scroll;
   scroll-snap-type: x mandatory;
   gap: 20px;
   padding: 20px;
   cursor: grab;
   scroll-behavior: smooth;
+  white-space: nowrap;
+  width: 100%;
+  
 }
 .scroll-container {
   display: flex;
@@ -289,6 +310,8 @@ h3 {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: transform 0.3s;
   flex: 0 0 auto;
+  scroll-snap-align: start;
+
 }
 .scroll-item:hover {
   transform: scale(1.05);
