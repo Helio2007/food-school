@@ -368,10 +368,17 @@ h3 {
 /* Food Section Style End */
 
 /* Footer Section Style Start */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .footer {
   overflow: hidden;
   background: rgba(8, 8, 8, 0.85);
   color: #fff;
+  margin-top: auto;
 }
 .footer .grid-3 {
   padding: 30px 0;
