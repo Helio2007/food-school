@@ -85,13 +85,12 @@ a:hover {
   font-weight: bold;
 }
 .img-responsive {
-  width: 100%;
+  width: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  width: 100%; /* Ensures it fills the container */
-    height: 250px; /* Set a fixed height */
+    height: 600px; /* Set a fixed height */
     object-fit: cover; /* Ensures the image fills the space without distortion */
     border-radius: 15px; /* Optional: Adds rounded corners */
   }
@@ -252,12 +251,13 @@ h3 {
   overflow: hidden
 }
 .food-search {
-  background-image: url(../img/search-bg.jpg);
+  background-image: url(../assets/img/search-bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   padding: 95px 0;
   background-attachment: fixed;
+  margin-bottom: 10px;
 }
 .food-search input[type="search"] {
   width: 50%;
@@ -285,21 +285,6 @@ h3 {
   scroll-behavior: smooth;
   white-space: nowrap;
   width: 100%;
-  
-}
-.scroll-container {
-  display: flex;
-  overflow-x: hidden;
-  scroll-snap-type: x mandatory;
-  gap: 20px;
-  padding: 20px;
-  cursor: grab;
-  scroll-behavior: smooth;
-  user-select: none;
-  
-}
-.scroll-container:active {
-  cursor: grabbing;
 }
 .scroll-item {
   flex: 0 0 auto;
