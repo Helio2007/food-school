@@ -317,7 +317,7 @@ h3 {
 
 /* Food Section Style Start */
 .food-menu {
-  background-image: url(../img/food-bg.jpg);
+  background-image: url(../assets/img/food-bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   padding: 55px 0;
