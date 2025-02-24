@@ -15,6 +15,17 @@ $(function () {
     $("#cart-content").toggle("blind", "", 500);
   });
 
+  $(document).ready(function () {
+    $("#shopping-cart").on("click", function () {
+        $(".cart-content").toggle("blind", 500);
+    });
+});
+
+function updateCartCount(count) {
+  $("#cart-count").text(count);
+}
+
+
   // Back-To-Top Button JS
   $("#back-to-top").click(function (event) {
     event.preventDefault();

@@ -200,11 +200,38 @@ h3 {
   padding: 2px 3px;
   border-radius: 3px;
 }
-.shopping-cart {
-  color: #6c5ce7;
+/* Shopping cart*/
+
+#shopping-cart {
+  font-size: 24px; 
+  color: #e60000; 
   cursor: pointer;
-  font-size: 18px;
+  transition: transform 0.3s ease;
 }
+
+#shopping-cart:hover {
+  transform: scale(1.1);
+}
+
+.cart-container {
+  position: relative;
+  display: inline-block;
+}
+
+#cart-count {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  line-height: 18px;
+}
+
 .cart-content {
   background: #fff;
   width: 440px;
