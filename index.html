@@ -100,10 +100,11 @@
     <!-- Food Search Section Start -->
     <section class="food-search text-center" >
         <div class="container">
-            <form action="food-search.html">
-                <input type="search" placeholder="Search for food..." required>
+            <form onsubmit="return searchFood(event)">
+                <input type="search" id="searchInput" placeholder="Search for food..." required>
                 <input type="submit" value="Search" class="btn-search">
-            </form>
+              </form>
+              
         </div>
     </section>
     <!-- Food Search Section End -->

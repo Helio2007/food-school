@@ -99,7 +99,6 @@ a:hover {
 }
 .text-center {
   text-align: center;
-  color: black;
 }
 .text-left {
   text-align: left;
@@ -202,6 +201,23 @@ h3 {
   border-radius: 3px;
 }
 /* Shopping cart*/
+
+.cart-link {
+  position: relative;
+  color: red;
+  font-size: 1.5rem;
+}
+
+#cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
 
 #shopping-cart {
   font-size: 24px; 

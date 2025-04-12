@@ -96,9 +96,13 @@
     <!-- Food Search Section Start -->
     <section class="food-search text-center" >
         <div class="container">
-            <h2 style="background: #44bd32;">Foods on you search <a href="#" class="text-white">"Pizza"</a></h2>
+            <form onsubmit="return handleSearch(event)">
+                <input type="search" id="search-input" placeholder="Search for food..." required>
+                <input type="submit" value="Search" class="btn-search">
+              </form>
         </div>
     </section>
+    
     <!-- Food Search Section End -->
 
     <!-- Foods Section Start -->
@@ -231,5 +235,23 @@
     </section>
     <!-- Footer Section End -->
 
+    <script>
+        function handleSearch(event) {
+          event.preventDefault();
+          const query = document.getElementById("search-input").value.toLowerCase();
+      
+          // Basic keyword match (can expand with more keywords)
+          if (query.includes("pizza")) window.location.href = "pizza.html";
+          else if (query.includes("burger")) window.location.href = "burger.html";
+          else if (query.includes("pasta")) window.location.href = "pasta.html";
+          else if (query.includes("salad")) window.location.href = "salad.html";
+          else if (query.includes("sushi")) window.location.href = "sushi.html";
+          else if (query.includes("dessert")) window.location.href = "dessert.html";
+          else if (query.includes("steak")) window.location.href = "steak.html";
+          else if (query.includes("sandwich")) window.location.href = "sandwich.html";
+          else alert("No results found for '\" + query + \"'\");
+          return false;
+        }
+      </script>
 </body>
 </html>

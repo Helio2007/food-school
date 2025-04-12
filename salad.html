@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="cart.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <nav id="site-top-nav" class="navbar-menu navbar-fixed-top">
+      <div class="container">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="categories-foods.html">Categories</a></li>
+          <li><a href="foods.html">Foods</a></li>
+          <li><a href="order.html" class="active">Order</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="order.html"><span id="cart-icon">🛒</span><span id="cart-count">0</span></a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <section class="form-section container">
+    <h2>Fill this form to confirm your order</h2>
+    <div class="order-table-wrapper">
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th>S.N.</th>
+            <th>Food</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cart-table"></tbody>
+      </table>
+    </div>
+    <h3 class="order-total">Total: <span id="total-amount">$0</span></h3>
+
+    <form onsubmit="return confirmOrder(event)" class="order-form">
+      <input type="text" placeholder="Enter your name..." required><br>
+      <input type="text" placeholder="Enter your phone..." required><br>
+      <input type="email" placeholder="Enter your email..." required><br>
+      <input type="text" placeholder="Enter your address..." required><br>
+      <button type="submit" class="btn-primary">Confirm Order</button>
+    </form>
+  </section>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let total = 0;
+
+    const tableBody = document.getElementById("cart-table");
+
+    cart.forEach((item, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td><img src="assets/img/${item.name.toLowerCase()}.jpg" alt="${item.name}" style="width: 50px"></td>
+        <td>${item.name}</td>
+        <td>$${item.price.toFixed(2)}</td>
+        <td>${item.qty}</td>
+        <td>$${item.total.toFixed(2)}</td>
+        <td><button onclick="removeItem(${index})">&times;</button></td>
+      `;
+      total += item.total;
+      tableBody.appendChild(row);
+    });
+
+    document.getElementById("total-amount").textContent = `$${total.toFixed(2)}`;
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      location.reload();
+    }
+
+    function confirmOrder(event) {
+      event.preventDefault();
+      window.location.href = `payment.html?total=${total.toFixed(2)}`;
+      return false;
+    }
+
+    // Update cart count on all pages
+    function updateCartCount() {
+      const cartCountElement = document.getElementById("cart-count");
+      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      const count = storedCart.reduce((acc, item) => acc + item.qty, 0);
+      cartCountElement.textContent = count;
+    }
+    updateCartCount();
+  </script>
+</body>
+</html>

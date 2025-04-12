@@ -58,5 +58,16 @@ function updateCartCount(count) {
   }
 });
 
+//Searchbar
+
+function searchFood(e) {
+  e.preventDefault();
+  const query = document.getElementById("searchInput").value.trim().toLowerCase();
+  if (query) {
+    window.open(`categories-foods.html?search=${encodeURIComponent(query)}`, '_blank');
+  }
+  return false;
+}
+
 
 

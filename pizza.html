@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pizza Options</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="cart.js" defer></script>
+</head>
+<body>
+  <section class="food-menu">
+    <h2>All Pizza Options</h2>
+    <div class="food-grid">
+      <div class="food-item">
+        <img src="assets/img/margherita.jpg" alt="Margherita">
+        <h4>Margherita</h4>
+        <p>$10.99</p>
+        <button onclick="addToCart('Margherita', 10.99)">Add to Cart</button>
+      </div>
+      <div class="food-item">
+        <img src="assets/img/pepperoni.jpg" alt="Pepperoni">
+        <h4>Pepperoni</h4>
+        <p>$12.49</p>
+        <button onclick="addToCart('Pepperoni', 12.49)">Add to Cart</button>
+      </div>
+      <div class="food-item">
+        <img src="assets/img/veggie.jpg" alt="Veggie Pizza">
+        <h4>Veggie Pizza</h4>
+        <p>$11.25</p>
+        <button onclick="addToCart('Veggie Pizza', 11.25)">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
