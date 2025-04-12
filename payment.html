@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="cart.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      background-color: #fff;
+      border-bottom: 1px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .logo {
+      font-size: 24px;
+      color: #ff3e3e;
+      font-weight: bold;
+    }
+    .cart-icon {
+      position: relative;
+      font-size: 20px;
+    }
+    .cart-icon i {
+      color: #333;
+    }
+    .cart-icon span {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #ff3e3e;
+      color: #fff;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #ff3e3e;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #e03131;
+    }
+    #total-price {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Food</div>
+    <div class="cart-icon">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cart-count">0</span>
+    </div>
+  </header>
+  <section class="container">
+    <h2>Payment</h2>
+    <p>Order Total: $<span id="total-price"></span></p>
+    <form onsubmit="submitPayment(event)">
+      <input type="text" placeholder="Card Number" required>
+      <input type="text" placeholder="Name on Card" required>
+      <input type="text" placeholder="Expiration Date" required>
+      <input type="text" placeholder="CVV" required>
+      <button type="submit">Pay Now</button>
+    </form>
+  </section>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const total = urlParams.get('total');
+    document.getElementById("total-price").textContent = total;
+
+    function submitPayment(e) {
+      e.preventDefault();
+      alert("Payment successful! Thank you for your order.");
+      localStorage.removeItem("cart");
+      updateCartCount();
+      window.location.href = "index.html";
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const count = cart.reduce((acc, item) => acc + item.qty, 0);
+      const cartCount = document.getElementById("cart-count");
+      if (cartCount) cartCount.textContent = count;
+    }
+
+    updateCartCount();
+  </script>
+  <section class="footer">
+    <div class="container">
+        <div class="grid-3">
+            <div class="text-center">
+                <h3>About Us</h3><br>
+                <p>Fresh, fast, and at your doorstep! 🚀 Our food delivery app connects you with your favorite restaurants, bringing delicious meals right to you—hot, fresh, and hassle-free. Order now and taste the convenience! 🍽️🔥</p>
+            </div>
+            <div class="texr-center">
+                <h3>Site Map</h3><br>
+                <div class="site-links">
+                    <a href="categories.html">Categories</a>
+                    <a href="foods.html">Foods</a>
+                    <a href="order.html">Order</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="login.html">Login</a>
+                </div>
+            </div>
+            <div class="social-links">
+                <h3>Social Links</h3><br>
+                <div class="social">
+                    <ul>
+                        <li><a href="#"><img src="https://img.icons8.com/color/48/null/facebook-new.png"/></a></li>
+                        <li><a href="#"><img src="https://img.icons8.com/fluency/48/null/instagram-new.png"/></a></li>
+                        <li><a href="#"><img src="https://img.icons8.com/color/48/null/twitter--v1.png"/></a></li>
+                        <li><a href="#"><img src="https://img.icons8.com/color/48/null/linkedin-circled--v1.png"/></a></li>
+                        <li><a href="#"><img src="https://img.icons8.com/color/48/null/youtube-play.png"/></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -13,6 +13,84 @@
     <link rel="stylesheet" href="css/hover-min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <script src="cart.js" defer></script>
+    <script src="custom.js"></script>
+    <style>
+        header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 30px;
+          background-color: #fff;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header .logo {
+          font-size: 24px;
+          font-weight: bold;
+          color: #ff3e3e;
+        }
+        header .cart-icon {
+          position: relative;
+          font-size: 20px;
+          color: #333;
+        }
+        header .cart-icon span {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          background-color: #ff3e3e;
+          color: #fff;
+          border-radius: 50%;
+          padding: 2px 6px;
+          font-size: 12px;
+        }
+        .container {
+          max-width: 900px;
+          margin: 60px auto;
+          padding: 20px;
+          background: #fff;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+        }
+        th, td {
+          padding: 12px;
+          border: 1px solid #ddd;
+          text-align: center;
+        }
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+        input {
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 16px;
+        }
+        button {
+          background-color: #ff3e3e;
+          color: white;
+          padding: 12px;
+          border: none;
+          border-radius: 6px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        button:hover {
+          background-color: #e03131;
+        }
+      </style>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -34,11 +112,12 @@
                         <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
                         <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
-                        <li>
-                            <a id="shopping-cart" class="shopping-cart">
-                                <i class="fa fa-cart-arrow-down"></i>
-                                <span class="badge">4</span>
-                            </a>
+                        <li class="cart">
+                          <a href="order.html" class="cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count">0</span>
+                          </a>
+                      </li>
                             <div id="cart-content" class="cart-content">
                                 <h3 class="text-center">Shopping Cart</h3>
                                 <table class="cart-table" border="0">
@@ -91,68 +170,77 @@
     <!-- Navigation Section End -->
 
     <!-- Food Order Section Start -->
-    <section class="order">
-        <div class="container">
-            <h2 class="text-center">Fill this form to confirm your order.</h2>
-            <table class="tbl-full" border="0">
-                <tr>
-                    <th>S.N.</th>
-                    <th>Food</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Total</th>
-                    <th>Action</th>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td><img src="../assets/img/p1.jpg" alt="Food"></td>
-                    <td>Pizza</td>
-                    <td>$ 8.00</td>
-                    <td>1</td>
-                    <td>$ 8.00</td>
-                    <td><a href="#" class="btn-delete">&times;</a></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td><img src="../assets/img/s1.jpg" alt="Food"></td>
-                    <td>Sandwich</td>
-                    <td>$ 8.00</td>
-                    <td>1</td>
-                    <td>$ 8.00</td>
-                    <td><a href="#" class="btn-delete">&times;</a></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td><img src="../assets/img/b1.jpg" alt="Food"></td>
-                    <td>Burder</td>
-                    <td>$ 8.00</td>
-                    <td>1</td>
-                    <td>$ 8.00</td>
-                    <td><a href="#" class="btn-delete">&times;</a></td>
-                </tr>
-                <tr>
-                    <th colspan="5">Total</th>
-                    <th>$24.00</th>
-                    <th></th>
-                </tr>
-            </table>
-            <form action="">
-                <fieldset class="order-form">
-                    <legend>Delivery Details</legend>
-                    <p class="label">Full Name</p>
-                    <input type="text" placeholder="Enter your name..." required>
-                    <p class="label">Phone Number</p>
-                    <input type="contact" placeholder="Enter your phone..." required>
-                    <p class="label">Email</p>
-                    <input type="email" placeholder="Enter your email..." required>
-                    <p class="label">Address</p>
-                    <input type="text" placeholder="Enter your address..." required>
-                    <input type="submit" value="Confirm Order" class="btn-order">
-                </fieldset>
-            </form>
-        </div>
-    </section>
+    <section class="container">
+        <h2>Fill this form to confirm your order.</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>S.N.</th>
+              <th>Food</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Qty</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="cart-table"></tbody>
+        </table>
+        <h3>Total: <span id="total-amount">$0</span></h3>
+    
+        <form onsubmit="return confirmOrder(event)">
+          <input type="text" placeholder="Enter your name..." required>
+          <input type="text" placeholder="Enter your phone..." required>
+          <input type="email" placeholder="Enter your email..." required>
+          <input type="text" placeholder="Enter your address..." required>
+          <button type="submit">Confirm Order</button>
+        </form>
+      </section>
+    
+      <script>
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        let total = 0;
+    
+        const tableBody = document.getElementById("cart-table");
+    
+        cart.forEach((item, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><img src="assets/img/${item.name.toLowerCase()}.jpg" alt="${item.name}" style="width: 50px"></td>
+            <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>${item.qty}</td>
+            <td>$${item.total.toFixed(2)}</td>
+            <td><button onclick="removeItem(${index})">&times;</button></td>
+          `;
+          total += item.total;
+          tableBody.appendChild(row);
+        });
+    
+        document.getElementById("total-amount").textContent = `$${total.toFixed(2)}`;
+    
+        function removeItem(index) {
+          cart.splice(index, 1);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          location.reload();
+        }
+    
+        function confirmOrder(event) {
+          event.preventDefault();
+          window.location.href = `payment.html?total=${total.toFixed(2)}`;
+          return false;
+        }
+    
+        function updateCartCount() {
+          const cart = JSON.parse(localStorage.getItem("cart")) || [];
+          const count = cart.reduce((acc, item) => acc + item.qty, 0);
+          const cartCount = document.getElementById("cart-count");
+          if (cartCount) cartCount.textContent = count;
+        }
+    
+        updateCartCount();
+      </script>
     <!-- Food Order Section End -->
 
     <!-- Footer Section Start -->
