@@ -1,19 +1,19 @@
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function addToCart(item) {
+function addToCart(item, qty = 1) {
+  qty = parseInt(qty) || 1; // fallback to 1 if qty is invalid
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const existingItem = cart.find(cartItem => cartItem.name === item.name);
 
   if (existingItem) {
-    existingItem.qty += 1;
-    existingItem.total = existingItem.qty * existingItem.price;
+      existingItem.qty += qty;
+      existingItem.total = existingItem.qty * existingItem.price;
   } else {
-    cart.push({ ...item, qty: 1, total: item.price });
+      cart.push({ ...item, qty: qty, total: item.price * qty });
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
 }
+
 
 
 function updateCartCount() {
