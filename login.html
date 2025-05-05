@@ -18,6 +18,110 @@
     <link rel="stylesheet" href="style.css">
     <script src="custom.js"></script>
     <script src="cart.js"></script>
+    <!-- Add Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .auth-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #ff3b3b;
+            border-bottom: 2px solid #ff3b3b;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .form-actions {
+            margin-top: 25px;
+        }
+        
+        .btn-auth {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff3b3b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-auth:hover {
+            background-color: #e03131;
+        }
+        
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+        
+        .error-message {
+            color: #e03131;
+            background-color: #ffebeb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #2e7d32;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -39,6 +143,7 @@
                         <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
                         <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
                         <li class="cart">
                             <a href="order.html" class="cart-icon">
                               <i class="fas fa-shopping-cart"></i>
@@ -96,18 +201,65 @@
     </header>
     <!-- Navigation Section End -->
 
-    <!-- Login Section Start -->
-    <div class="login-container">
-        <h2>Log in to Your Account</h2>
-        <form action="#" method="POST">
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit">Log In</button>
-        </form>
-        <p>Don't have an account? <a href="#">Sign up</a></p>
+    <!-- Auth Section Start -->
+    <div class="auth-container">
+        <div class="tabs">
+            <div class="tab active" data-tab="login">Login</div>
+            <div class="tab" data-tab="signup">Sign Up</div>
+        </div>
+        
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        
+        <div id="login-tab" class="tab-content active">
+            <h2>Login to Your Account</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-auth">Login</button>
+                </div>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" onclick="switchTab('signup')">Sign up</a></p>
+                </div>
+            </form>
+        </div>
+        
+        <div id="signup-tab" class="tab-content">
+            <h2>Create an Account</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-phone">Phone Number</label>
+                    <input type="tel" id="signup-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-auth">Sign Up</button>
+                </div>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" onclick="switchTab('login')">Login</a></p>
+                </div>
+            </form>
+        </div>
     </div>
-</section>
-    <!-- Login Section End -->
+    <!-- Auth Section End -->
 
     <!-- Footer Section Start -->
     <section class="footer">
@@ -154,5 +306,151 @@
     </div>
 
     <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
+    
+    <!-- Auth Script -->
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Clear error and success messages
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+        }
+        
+        // Add click event listeners to tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+        
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    errorMessage.textContent = error.message;
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                } else {
+                    // Login successful
+                    successMessage.textContent = 'Login successful! Redirecting...';
+                    successMessage.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    
+                    // Redirect to home page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                console.error('Login error:', error);
+            }
+        });
+        
+        // Sign up form submission
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const phone = document.getElementById('signup-phone').value;
+            const password = document.getElementById('signup-password').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            try {
+                // Sign up the user
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name,
+                            phone: phone
+                        }
+                    }
+                });
+                
+                if (error) {
+                    errorMessage.textContent = error.message;
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                } else {
+                    // Create a profile record for the user
+                    await supabase
+                        .from('profiles')
+                        .insert([
+                            {
+                                id: data.user.id,
+                                full_name: name,
+                                email: email,
+                                phone: phone,
+                                created_at: new Date().toISOString()
+                            }
+                        ]);
+                    
+                    // Sign up successful
+                    successMessage.textContent = 'Account created successfully! You can now login.';
+                    successMessage.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    
+                    // Clear the form
+                    document.getElementById('signup-form').reset();
+                    
+                    // Switch to login tab after 2 seconds
+                    setTimeout(() => {
+                        switchTab('login');
+                    }, 2000);
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                console.error('Signup error:', error);
+            }
+        });
+        
+        // Check if the user is already logged in
+        async function checkAuthState() {
+            const { data: { user } } = await supabase.auth.getUser();
+            
+            if (user) {
+                // User is already logged in, redirect to home page
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Check auth state on page load
+        checkAuthState();
+    </script>
 </body>
 </html>

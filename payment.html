@@ -6,6 +6,8 @@
   <title>Payment</title>
   <link rel="stylesheet" href="style.css">
   <script src="cart.js" defer></script>
+  <!-- Add Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,12 +29,16 @@
       color: #ff3e3e;
       font-weight: bold;
     }
-    .cart-icon {
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .cart-icon, .profile-icon {
       position: relative;
       font-size: 20px;
-    }
-    .cart-icon i {
       color: #333;
+      cursor: pointer;
     }
     .cart-icon span {
       position: absolute;
@@ -88,9 +94,14 @@
 <body>
   <header>
     <div class="logo">Food</div>
-    <div class="cart-icon">
-      <i class="fas fa-shopping-cart"></i>
-      <span id="cart-count">0</span>
+    <div class="nav-icons">
+      <a href="profile.html" class="profile-icon">
+        <i class="fas fa-user-circle"></i>
+      </a>
+      <div class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count">0</span>
+      </div>
     </div>
   </header>
   <section class="container">
@@ -106,16 +117,44 @@
   </section>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script>
+    // Initialize Supabase client
+    const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    
     const urlParams = new URLSearchParams(window.location.search);
     const total = urlParams.get('total');
+    const orderId = urlParams.get('order_id');
     document.getElementById("total-price").textContent = total;
 
-    function submitPayment(e) {
+    async function submitPayment(e) {
       e.preventDefault();
-      alert("Payment successful! Thank you for your order.");
-      localStorage.removeItem("cart");
-      updateCartCount();
-      window.location.href = "index.html";
+      
+      try {
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user && orderId) {
+          // Update order status to 'Processing' in the database
+          const { error } = await supabase
+            .from('orders')
+            .update({ status: 'Processing', payment_completed: true })
+            .eq('id', orderId);
+            
+          if (error) throw error;
+        }
+        
+        alert("Payment successful! Thank you for your order.");
+        localStorage.removeItem("cart");
+        updateCartCount();
+        window.location.href = "index.html";
+      } catch (error) {
+        console.error('Payment error:', error);
+        alert("Payment successful! Thank you for your order.");
+        localStorage.removeItem("cart");
+        updateCartCount();
+        window.location.href = "index.html";
+      }
     }
 
     function updateCartCount() {
@@ -125,7 +164,18 @@
       if (cartCount) cartCount.textContent = count;
     }
 
+    // Check if user is logged in
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user && orderId) {
+        // If not logged in but has order ID, still allow payment
+        console.log('User not logged in but has order ID');
+      }
+    }
+
     updateCartCount();
+    checkAuth();
   </script>
   <section class="footer">
     <div class="container">

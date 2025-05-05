@@ -31,6 +31,63 @@
     border-radius: 0 0 15px 15px;
 }
 
+.scheduled-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.scheduled-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.scheduled-time {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.delivery-status {
+    font-size: 12px;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.driver-marker {
+    transition: opacity 0.5s ease;
+    text-align: center;
+    font-size: 24px;
+    text-shadow: 0 0 3px white;
+}
+
+.driver-marker.active {
+    font-size: 28px;
+    color: #ff3b3b;
+    z-index: 1000;
+}
+
+.destination-marker {
+    transition: opacity 0.5s ease;
+    text-align: center;
+    font-size: 28px;
+    color: #ff3b3b;
+    text-shadow: 0 0 3px white;
+}
+
+.restaurant-marker {
+    text-align: center;
+    font-size: 24px;
+    text-shadow: 0 0 3px white;
+    z-index: 900;
+}
+
+.restaurant-marker div {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    padding: 2px;
+}
+
 .close-btn {
     position: absolute;
     top: 10px;

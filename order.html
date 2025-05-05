@@ -96,6 +96,93 @@
           background-color: #e03131;
         }
       </style>
+      <!-- Add styles for delivery schedule UI -->
+      <style>
+        .delivery-schedule {
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          padding: 20px;
+          margin: 15px 0;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .delivery-schedule h3 {
+          margin-top: 0;
+          color: #333;
+          font-size: 18px;
+          text-align: left;
+        }
+        
+        .delivery-options {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+        
+        .option-card {
+          flex: 1;
+          background: white;
+          border: 2px solid #eee;
+          border-radius: 10px;
+          padding: 15px;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        
+        .option-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .option-card.active {
+          border-color: #ff3b3b;
+          background-color: #fff8f8;
+        }
+        
+        .option-icon {
+          font-size: 28px;
+          margin-bottom: 8px;
+        }
+        
+        .option-label {
+          font-weight: bold;
+          color: #333;
+        }
+        
+        .date-time-picker {
+          display: flex;
+          gap: 15px;
+          margin-top: 15px;
+        }
+        
+        .date-picker, .time-picker {
+          flex: 1;
+        }
+        
+        .date-time-picker label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: bold;
+          color: #555;
+        }
+        
+        .date-time-picker input,
+        .date-time-picker select {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 16px;
+          background-color: white;
+        }
+        
+        @media (max-width: 768px) {
+          .date-time-picker {
+            flex-direction: column;
+          }
+        }
+      </style>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -117,6 +204,7 @@
                         <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
                         <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
                         <li class="cart">
                           <a href="order.html" class="cart-icon">
                             <i class="fas fa-shopping-cart"></i>
@@ -198,13 +286,74 @@
           <input type="text" placeholder="Enter your phone..." required>
           <input type="email" placeholder="Enter your email..." required>
           <input type="text" placeholder="Enter your address..." required>
+          
+          <div class="delivery-schedule">
+            <h3>Delivery Options</h3>
+            <div class="delivery-options">
+              <div class="option-card active" onclick="selectDeliveryOption('asap')">
+                <div class="option-icon">🚀</div>
+                <div class="option-label">ASAP</div>
+              </div>
+              <div class="option-card" onclick="selectDeliveryOption('scheduled')">
+                <div class="option-icon">⏰</div>
+                <div class="option-label">Schedule</div>
+              </div>
+            </div>
+            
+            <div id="schedule-controls" style="display:none;">
+              <div class="date-time-picker">
+                <div class="date-picker">
+                  <label for="delivery-date">Delivery Date</label>
+                  <input type="date" id="delivery-date" min="">
+                </div>
+                <div class="time-picker">
+                  <label for="delivery-time">Delivery Time</label>
+                  <select id="delivery-time">
+                    <option value="">Select time</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="10:30">10:30 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="11:30">11:30 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="12:30">12:30 PM</option>
+                    <option value="13:00">1:00 PM</option>
+                    <option value="13:30">1:30 PM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="14:30">2:30 PM</option>
+                    <option value="15:00">3:00 PM</option>
+                    <option value="15:30">3:30 PM</option>
+                    <option value="16:00">4:00 PM</option>
+                    <option value="16:30">4:30 PM</option>
+                    <option value="17:00">5:00 PM</option>
+                    <option value="17:30">5:30 PM</option>
+                    <option value="18:00">6:00 PM</option>
+                    <option value="18:30">6:30 PM</option>
+                    <option value="19:00">7:00 PM</option>
+                    <option value="19:30">7:30 PM</option>
+                    <option value="20:00">8:00 PM</option>
+                    <option value="20:30">8:30 PM</option>
+                    <option value="21:00">9:00 PM</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <button type="submit">Confirm Order</button>
         </form>
       </section>
     
       <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
         let total = 0;
+        let deliveryOption = "asap";
+        let scheduledTime = null;
+        let currentUser = null;
     
         const tableBody = document.getElementById("cart-table");
     
@@ -231,9 +380,81 @@
           location.reload();
         }
     
-        function confirmOrder(event) {
+        async function confirmOrder(event) {
           event.preventDefault();
-          window.location.href = `payment.html?total=${total.toFixed(2)}`;
+          
+          // Check if user is logged in
+          const { data: { user } } = await supabase.auth.getUser();
+          
+          if (!user) {
+            // Save the current URL to redirect back after login
+            localStorage.setItem('redirectAfterLogin', window.location.href);
+            
+            // Redirect to login page
+            window.location.href = 'login.html';
+            return false;
+          }
+          
+          // Get form values
+          const name = event.target.querySelector('input[placeholder="Enter your name..."]').value;
+          const phone = event.target.querySelector('input[placeholder="Enter your phone..."]').value;
+          const email = event.target.querySelector('input[placeholder="Enter your email..."]').value;
+          const address = event.target.querySelector('input[placeholder="Enter your address..."]').value;
+          
+          // Save delivery schedule information
+          if (deliveryOption === "scheduled" && scheduledTime) {
+            localStorage.setItem("scheduledDelivery", JSON.stringify(scheduledTime));
+          } else {
+            localStorage.removeItem("scheduledDelivery");
+          }
+          
+          try {
+            // Create order in the database
+            const { data: order, error: orderError } = await supabase
+              .from('orders')
+              .insert([
+                {
+                  user_id: user.id,
+                  total_amount: total,
+                  status: 'Pending',
+                  delivery_address: address,
+                  customer_name: name,
+                  customer_phone: phone,
+                  customer_email: email,
+                  delivery_option: deliveryOption,
+                  scheduled_time: scheduledTime ? scheduledTime.formatted : null,
+                  created_at: new Date().toISOString()
+                }
+              ])
+              .select();
+              
+            if (orderError) throw orderError;
+            
+            // Create order items
+            const orderItems = cart.map(item => ({
+              order_id: order[0].id,
+              product_name: item.name,
+              price: item.price,
+              quantity: item.qty,
+              total: item.total
+            }));
+            
+            const { error: itemsError } = await supabase
+              .from('order_items')
+              .insert(orderItems);
+              
+            if (itemsError) throw itemsError;
+            
+            // Clear the cart
+            localStorage.removeItem("cart");
+            
+            // Continue to payment page
+            window.location.href = `payment.html?total=${total.toFixed(2)}&order_id=${order[0].id}`;
+          } catch (error) {
+            console.error('Error creating order:', error);
+            alert('There was an error processing your order. Please try again.');
+          }
+          
           return false;
         }
     
@@ -243,8 +464,125 @@
           const cartCount = document.getElementById("cart-count");
           if (cartCount) cartCount.textContent = count;
         }
+        
+        function selectDeliveryOption(option) {
+          deliveryOption = option;
+          
+          // Update UI
+          document.querySelectorAll('.option-card').forEach(card => {
+            card.classList.remove('active');
+          });
+          
+          const selectedCard = document.querySelector(`.option-card[onclick*="${option}"]`);
+          if (selectedCard) selectedCard.classList.add('active');
+          
+          // Show/hide schedule controls
+          const scheduleControls = document.getElementById('schedule-controls');
+          if (option === 'scheduled') {
+            scheduleControls.style.display = 'block';
+            setupDateTimePicker();
+          } else {
+            scheduleControls.style.display = 'none';
+            scheduledTime = null;
+          }
+        }
+        
+        function setupDateTimePicker() {
+          // Set min date to today
+          const today = new Date();
+          const dateInput = document.getElementById('delivery-date');
+          
+          // Format date as YYYY-MM-DD for the input
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+          
+          dateInput.min = `${year}-${month}-${day}`;
+          dateInput.value = `${year}-${month}-${day}`;
+          
+          // Add event listeners
+          dateInput.addEventListener('change', updateScheduledTime);
+          document.getElementById('delivery-time').addEventListener('change', updateScheduledTime);
+          
+          // Initialize with current selected values
+          updateScheduledTime();
+        }
+        
+        function updateScheduledTime() {
+          const dateInput = document.getElementById('delivery-date');
+          const timeInput = document.getElementById('delivery-time');
+          
+          if (dateInput.value && timeInput.value) {
+            scheduledTime = {
+              date: dateInput.value,
+              time: timeInput.value,
+              formatted: formatScheduledTime(dateInput.value, timeInput.value)
+            };
+          } else {
+            scheduledTime = null;
+          }
+        }
+        
+        function formatScheduledTime(dateStr, timeStr) {
+          const date = new Date(dateStr + 'T' + timeStr);
+          const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          };
+          
+          return date.toLocaleDateString('en-US', options);
+        }
     
         updateCartCount();
+        
+        // Initialize date time picker if we're on a previously scheduled order
+        const savedSchedule = JSON.parse(localStorage.getItem("scheduledDelivery"));
+        if (savedSchedule) {
+          selectDeliveryOption('scheduled');
+          document.getElementById('delivery-date').value = savedSchedule.date;
+          document.getElementById('delivery-time').value = savedSchedule.time;
+          updateScheduledTime();
+        }
+        
+        // Check authentication status on page load
+        async function checkAuth() {
+          const { data: { user } } = await supabase.auth.getUser();
+          currentUser = user;
+          
+          // Pre-fill user information if available
+          if (user) {
+            try {
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+                
+              if (profile) {
+                // Pre-fill form with user data
+                const nameInput = document.querySelector('input[placeholder="Enter your name..."]');
+                const phoneInput = document.querySelector('input[placeholder="Enter your phone..."]');
+                const emailInput = document.querySelector('input[placeholder="Enter your email..."]');
+                const addressInput = document.querySelector('input[placeholder="Enter your address..."]');
+                
+                if (nameInput) nameInput.value = profile.full_name || '';
+                if (phoneInput) phoneInput.value = profile.phone || '';
+                if (emailInput) emailInput.value = profile.email || user.email || '';
+                if (addressInput) addressInput.value = profile.address_line_1 ? 
+                  `${profile.address_line_1}, ${profile.city}, ${profile.postal_code}` : '';
+              }
+            } catch (error) {
+              console.error('Error fetching profile:', error);
+            }
+          }
+        }
+        
+        // Check authentication
+        checkAuth();
       </script>
     <!-- Food Order Section End -->
 

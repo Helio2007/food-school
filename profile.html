@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Food School</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
+    <!-- Hover CSS -->
+    <link rel="stylesheet" href="css/hover-min.css">
+    <!--Map-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="live-map.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <script src="custom.js"></script>
+    <script src="cart.js"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profile-header h1 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .logout-btn {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            color: #666;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background-color: #eee;
+        }
+        
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profile-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .profile-tab.active {
+            color: #ff3b3b;
+            border-bottom: 2px solid #ff3b3b;
+        }
+        
+        .profile-content {
+            display: none;
+        }
+        
+        .profile-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .form-actions {
+            margin-top: 30px;
+        }
+        
+        .btn-primary {
+            padding: 12px 25px;
+            background-color: #ff3b3b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #e03131;
+        }
+        
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .orders-table th, .orders-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+        
+        .orders-table th {
+            font-weight: bold;
+            color: #555;
+            background-color: #f9f9f9;
+        }
+        
+        .orders-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .status-pill {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background-color: #fff8e1;
+            color: #ffa000;
+        }
+        
+        .status-processing {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-delivered {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .error-message {
+            color: #e03131;
+            background-color: #ffebeb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #2e7d32;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Section Start -->
+    <header class="navbar">
+        <nav id="site-top-nav" class="navbar-menu navbar-fixed-top">
+            <div class="container">
+                <!-- logo -->
+                <div class="logo">
+                    <a href="index.html" title="Logo">
+                        <img src="../assets/img/logo.png" alt="Logo" class="logo">
+                    </a>
+                </div>
+                <!-- Main Menu -->
+                <div class="menu text-right">
+                    <ul>
+                        <li><a class="hvr-underline-from-center" href="index.html">Home</a></li>
+                        <li><a class="hvr-underline-from-center" href="categories.html">Categories</a></li>
+                        <li><a class="hvr-underline-from-center" href="foods.html">Foods</a></li>
+                        <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
+                        <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
+                        <li class="cart">
+                            <a href="order.html" class="cart-icon">
+                              <i class="fas fa-shopping-cart"></i>
+                              <span id="cart-count">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- Navigation Section End -->
+
+    <!-- Profile Section Start -->
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>My Account</h1>
+            <button id="logout-btn" class="logout-btn">Logout</button>
+        </div>
+        
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+        
+        <div class="profile-tabs">
+            <div class="profile-tab active" data-tab="profile">My Profile</div>
+            <div class="profile-tab" data-tab="orders">Order History</div>
+            <div class="profile-tab" data-tab="address">Addresses</div>
+        </div>
+        
+        <div id="profile-tab-content" class="profile-content active">
+            <h2>Personal Information</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" name="full_name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="orders-tab-content" class="profile-content">
+            <h2>Order History</h2>
+            <div id="orders-container">
+                <div class="empty-state">
+                    <i class="fa fa-shopping-bag"></i>
+                    <p>You haven't placed any orders yet.</p>
+                </div>
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+        
+        <div id="address-tab-content" class="profile-content">
+            <h2>Delivery Addresses</h2>
+            <form id="address-form">
+                <div class="form-group">
+                    <label for="address-line-1">Address Line 1</label>
+                    <input type="text" id="address-line-1" name="address_line_1">
+                </div>
+                <div class="form-group">
+                    <label for="address-line-2">Address Line 2 (Optional)</label>
+                    <input type="text" id="address-line-2" name="address_line_2">
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city">
+                </div>
+                <div class="form-group">
+                    <label for="postal-code">Postal Code</label>
+                    <input type="text" id="postal-code" name="postal_code">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Profile Section End -->
+
+    <!-- Footer Section Start -->
+    <section class="footer">
+        <div class="container">
+            <div class="grid-3">
+                <div class="text-center">
+                    <h3>About Us</h3><br>
+                    <p>Fresh, fast, and at your doorstep! 🚀 Our food delivery app connects you with your favorite restaurants, bringing delicious meals right to you—hot, fresh, and hassle-free. Order now and taste the convenience! 🍽️🔥</p>
+                </div>
+                <div class="texr-center">
+                    <h3>Site Map</h3><br>
+                    <div class="site-links">
+                        <a href="categories.html">Categories</a>
+                        <a href="foods.html">Foods</a>
+                        <a href="order.html">Order</a>
+                        <a href="contact.html">Contact</a>
+                        <a href="login.html">Login</a>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <h3>Social Links</h3><br>
+                    <div class="social">
+                        <ul>
+                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/facebook-new.png"/></a></li>
+                            <li><a href="#"><img src="https://img.icons8.com/fluency/48/null/instagram-new.png"/></a></li>
+                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/twitter--v1.png"/></a></li>
+                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/linkedin-circled--v1.png"/></a></li>
+                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/youtube-play.png"/></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer Section End -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="live-map.js"></script>
+    
+    <!-- Map popup -->
+    <div class="map-popup">
+        <button class="close-btn" onclick="closeMap()">×</button>
+        <div id="map"></div>
+        <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
+    </div>
+
+    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
+    
+    <!-- Profile Script -->
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
+        
+        // Fix: Correctly initialize Supabase client
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        let currentUser = null;
+        let userProfile = null;
+        
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.profile-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.profile-tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab-content`).classList.add('active');
+            
+            // Load data for the specific tab
+            if (tabName === 'orders') {
+                loadOrderHistory();
+            }
+        }
+        
+        // Add click event listeners to tabs
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+        
+        // Check if user is logged in and fetch profile data
+        async function checkAuthAndLoadProfile() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (!user) {
+                    // Redirect to login page if not logged in
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                currentUser = user;
+                
+                // Fetch user's profile data
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (error) {
+                    console.error('Error fetching profile:', error);
+                    
+                    // Create profile if it doesn't exist
+                    await createUserProfile(user);
+                    return;
+                }
+                
+                userProfile = data;
+                
+                // Populate the profile form
+                populateProfileForm();
+                
+                // Load order history
+                if (document.querySelector('.profile-tab.active').dataset.tab === 'orders') {
+                    loadOrderHistory();
+                }
+                
+            } catch (error) {
+                console.error('Auth check error:', error);
+                // Redirect to login page if there's an error
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Create user profile if it doesn't exist
+        async function createUserProfile(user) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: user.id,
+                            email: user.email,
+                            created_at: new Date().toISOString()
+                        }
+                    ])
+                    .select();
+                
+                if (error) {
+                    console.error('Error creating profile:', error);
+                    return;
+                }
+                
+                userProfile = data[0];
+                populateProfileForm();
+                
+            } catch (error) {
+                console.error('Profile creation error:', error);
+            }
+        }
+        
+        // Populate profile form with user data
+        function populateProfileForm() {
+            if (!userProfile) return;
+            
+            document.getElementById('full-name').value = userProfile.full_name || '';
+            document.getElementById('email').value = userProfile.email || currentUser.email || '';
+            document.getElementById('phone').value = userProfile.phone || '';
+            
+            // Populate address fields if available
+            if (userProfile.address_line_1) {
+                document.getElementById('address-line-1').value = userProfile.address_line_1 || '';
+                document.getElementById('address-line-2').value = userProfile.address_line_2 || '';
+                document.getElementById('city').value = userProfile.city || '';
+                document.getElementById('postal-code').value = userProfile.postal_code || '';
+            }
+        }
+        
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            const fullName = document.getElementById('full-name').value;
+            const phone = document.getElementById('phone').value;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .update({
+                        full_name: fullName,
+                        phone: phone,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', currentUser.id);
+                
+                if (error) {
+                    errorMessage.textContent = error.message;
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                } else {
+                    successMessage.textContent = 'Profile updated successfully!';
+                    successMessage.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    
+                    // Update the user profile data
+                    userProfile.full_name = fullName;
+                    userProfile.phone = phone;
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                console.error('Profile update error:', error);
+            }
+        });
+        
+        // Handle address form submission
+        document.getElementById('address-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            const addressLine1 = document.getElementById('address-line-1').value;
+            const addressLine2 = document.getElementById('address-line-2').value;
+            const city = document.getElementById('city').value;
+            const postalCode = document.getElementById('postal-code').value;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('profiles')
+                    .update({
+                        address_line_1: addressLine1,
+                        address_line_2: addressLine2,
+                        city: city,
+                        postal_code: postalCode,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', currentUser.id);
+                
+                if (error) {
+                    errorMessage.textContent = error.message;
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                } else {
+                    successMessage.textContent = 'Address updated successfully!';
+                    successMessage.style.display = 'block';
+                    errorMessage.style.display = 'none';
+                    
+                    // Update the user profile data
+                    userProfile.address_line_1 = addressLine1;
+                    userProfile.address_line_2 = addressLine2;
+                    userProfile.city = city;
+                    userProfile.postal_code = postalCode;
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                console.error('Address update error:', error);
+            }
+        });
+        
+        // Load order history
+        async function loadOrderHistory() {
+            if (!currentUser) return;
+            
+            const ordersContainer = document.getElementById('orders-container');
+            
+            try {
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error fetching orders:', error);
+                    return;
+                }
+                
+                if (!orders || orders.length === 0) {
+                    // Show empty state if no orders
+                    ordersContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa fa-shopping-bag"></i>
+                            <p>You haven't placed any orders yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Create orders table
+                let tableHTML = `
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                // Add each order to the table
+                orders.forEach(order => {
+                    const orderDate = new Date(order.created_at).toLocaleDateString();
+                    const status = order.status || 'Pending';
+                    const statusClass = `status-${status.toLowerCase()}`;
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>#${order.id}</td>
+                            <td>${orderDate}</td>
+                            <td>$${order.total_amount ? order.total_amount.toFixed(2) : '0.00'}</td>
+                            <td><span class="status-pill ${statusClass}">${status}</span></td>
+                            <td><a href="#" onclick="viewOrderDetails(${order.id})">View Details</a></td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                
+                ordersContainer.innerHTML = tableHTML;
+                
+            } catch (error) {
+                console.error('Order history error:', error);
+                ordersContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>Error loading orders. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // View order details
+        window.viewOrderDetails = function(orderId) {
+            // Implement order details view
+            console.log('View order details:', orderId);
+            // You could open a modal or navigate to a dedicated order details page
+            alert('Order details functionality coming soon!');
+        };
+        
+        // Handle logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                
+                if (error) {
+                    console.error('Logout error:', error);
+                    return;
+                }
+                
+                // Redirect to home page after logout
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+        
+        // Update cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            const cartCount = document.getElementById("cart-count");
+            if (cartCount) cartCount.textContent = count;
+        }
+        
+        // Check authentication status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthAndLoadProfile();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html> 
