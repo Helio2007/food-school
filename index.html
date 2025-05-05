@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="style.css">
     <!--Map-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="/live-map.css">
+    <link rel="stylesheet" href="live-map.css">
     <!-- Custom JS-->>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="custom.js"></script>
@@ -179,7 +179,7 @@
                         <div class="food-menu-desc">
                             <h4>Pizza</h4>
                             <p class="food-price">$9.99</p>
-                            <p class="food-details">Crispy crust, melty cheese, and toppings you’ll crave again and again.</p>
+                            <p class="food-details">Crispy crust, melty cheese, and toppings you'll crave again and again.</p>
                             <input type="number" value="1" min="1">
                             <button class="btn-primary" onclick='addToCart({ name: "Pizza", price: 9.99 }, this.previousElementSibling.value)'>Add to Cart</button>
 
@@ -299,8 +299,15 @@
     </section>
     <!-- Footer Section End -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="/live-map.js"></script>
-    <!-- Include map popup HTML -->
-    <iframe src="/map-popup.html" style="display:none;"></iframe>
+    <script src="live-map.js"></script>
+    
+    <!-- Map popup -->
+    <div class="map-popup">
+        <button class="close-btn" onclick="closeMap()">×</button>
+        <div id="map"></div>
+        <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
+    </div>
+
+    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
 </body>
 </html>

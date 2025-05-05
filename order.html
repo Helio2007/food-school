@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/hover-min.css">
     <!--Map-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="/live-map.css">
+    <link rel="stylesheet" href="live-map.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 
@@ -283,8 +283,15 @@
     </section>
     <!-- Footer Section End -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="/live-map.js"></script>
-    <!-- Include map popup HTML -->
-    <iframe src="/map-popup.html" style="display:none;"></iframe>
+    <script src="live-map.js"></script>
+    
+    <!-- Map popup -->
+    <div class="map-popup">
+        <button class="close-btn" onclick="closeMap()">×</button>
+        <div id="map"></div>
+        <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
+    </div>
+
+    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
   </body>
 </html>
