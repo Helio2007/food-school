@@ -312,7 +312,7 @@
         // Initialize Supabase client
         const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // Tab switching
         function switchTab(tabName) {
@@ -363,9 +363,19 @@
                     successMessage.style.display = 'block';
                     errorMessage.style.display = 'none';
                     
-                    // Redirect to home page after 2 seconds
+                    // Check if there's a redirect URL stored
+                    const redirectUrl = localStorage.getItem('redirectAfterLogin');
+                    
+                    // Redirect after 2 seconds
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        if (redirectUrl) {
+                            // Clear the stored URL and redirect to it
+                            localStorage.removeItem('redirectAfterLogin');
+                            window.location.href = redirectUrl;
+                        } else {
+                            // Default redirect to home page
+                            window.location.href = 'index.html';
+                        }
                     }, 2000);
                 }
             } catch (error) {
@@ -388,35 +398,77 @@
             const successMessage = document.getElementById('success-message');
             
             try {
+                // First, check if the profiles table exists and is accessible
+                const { error: tableCheckError } = await supabase
+                    .from('profiles')
+                    .select('count')
+                    .limit(1);
+                    
+                if (tableCheckError) {
+                    console.error('Cannot access profiles table:', tableCheckError);
+                    errorMessage.textContent = 'System error: Cannot access user profiles. Please contact support.';
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                    return;
+                }
+                
                 // Sign up the user
                 const { data, error } = await supabase.auth.signUp({
                     email,
-                    password,
-                    options: {
-                        data: {
-                            full_name: name,
-                            phone: phone
-                        }
-                    }
+                    password
                 });
                 
+                console.log('Signup response:', data);
+                
                 if (error) {
+                    console.error('Signup error:', error);
                     errorMessage.textContent = error.message;
                     errorMessage.style.display = 'block';
                     successMessage.style.display = 'none';
-                } else {
-                    // Create a profile record for the user
-                    await supabase
+                    return;
+                }
+                
+                if (!data.user || !data.user.id) {
+                    console.error('Signup succeeded but no user ID returned');
+                    errorMessage.textContent = 'Account created but user data is incomplete. Please try logging in.';
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
+                    
+                    // Still show success and redirect to login
+                    setTimeout(() => {
+                        switchTab('login');
+                    }, 3000);
+                    return;
+                }
+                
+                // Create a profile record manually via RPC or REST API
+                try {
+                    // Try direct insert first with only existing columns (id and phone)
+                    const { error: profileError } = await supabase
                         .from('profiles')
-                        .insert([
-                            {
-                                id: data.user.id,
-                                full_name: name,
-                                email: email,
-                                phone: phone,
-                                created_at: new Date().toISOString()
-                            }
-                        ]);
+                        .upsert({
+                            id: data.user.id,
+                            phone: phone
+                            // Removed full_name which doesn't exist in the profiles table
+                        });
+                    
+                    if (profileError) {
+                        console.error('Profile creation error (upsert):', profileError);
+                        
+                        // Fallback to direct update with match criteria
+                        const { error: updateError } = await supabase
+                            .from('profiles')
+                            .update({
+                                phone: phone
+                                // Removed full_name which doesn't exist in the profiles table
+                            })
+                            .match({ id: data.user.id });
+                            
+                        if (updateError) {
+                            console.error('Profile update fallback error:', updateError);
+                            throw updateError;
+                        }
+                    }
                     
                     // Sign up successful
                     successMessage.textContent = 'Account created successfully! You can now login.';
@@ -430,12 +482,19 @@
                     setTimeout(() => {
                         switchTab('login');
                     }, 2000);
+                    
+                } catch (profileError) {
+                    console.error('Profile creation failed:', profileError);
+                    errorMessage.textContent = 'Account created but profile setup failed. Please contact support.';
+                    errorMessage.style.display = 'block';
+                    successMessage.style.display = 'none';
                 }
+                
             } catch (error) {
+                console.error('Signup process error:', error);
                 errorMessage.textContent = 'An error occurred. Please try again.';
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
-                console.error('Signup error:', error);
             }
         });
         
@@ -451,6 +510,142 @@
         
         // Check auth state on page load
         checkAuthState();
+
+        // Function to check database structure
+        async function checkDatabaseStructure() {
+            try {
+                // Check if tables exist
+                console.log('Checking database structure...');
+                
+                // Check profiles table
+                const { data: profileData, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .limit(1);
+                    
+                console.log('Profiles table check:', profileError ? 'Error' : 'Success');
+                if (profileError) console.error('Profiles table error:', profileError);
+                
+                // Check orders table
+                const { data: orderData, error: orderError } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .limit(1);
+                    
+                console.log('Orders table check:', orderError ? 'Error' : 'Success');
+                if (orderError) console.error('Orders table error:', orderError);
+                
+                // Check order_items table
+                const { data: itemData, error: itemError } = await supabase
+                    .from('order_items')
+                    .select('*')
+                    .limit(1);
+                    
+                console.log('Order items table check:', itemError ? 'Error' : 'Success');
+                if (itemError) console.error('Order items table error:', itemError);
+                
+            } catch (error) {
+                console.error('Database check error:', error);
+            }
+        }
+        
+        // Run check on page load
+        window.addEventListener('load', checkDatabaseStructure);
+
+        // Function to check browser compatibility and Supabase connection
+        async function checkBrowserAndSupabase() {
+            const errorMessage = document.getElementById('error-message');
+            
+            try {
+                console.log('Checking browser compatibility...');
+                
+                // Check if localStorage is available
+                if (typeof localStorage === 'undefined') {
+                    console.error('localStorage is not available');
+                    errorMessage.textContent = 'Your browser does not support local storage, which is required for authentication.';
+                    errorMessage.style.display = 'block';
+                    return false;
+                }
+                
+                // Check if IndexedDB is available (used by Supabase Auth)
+                if (typeof indexedDB === 'undefined') {
+                    console.error('indexedDB is not available');
+                    errorMessage.textContent = 'Your browser does not support IndexedDB, which is required for authentication.';
+                    errorMessage.style.display = 'block';
+                    return false;
+                }
+                
+                // Check connection to Supabase
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    console.error('Supabase connection error:', error);
+                    errorMessage.textContent = 'Could not connect to authentication service. Please check your internet connection.';
+                    errorMessage.style.display = 'block';
+                    return false;
+                }
+                
+                console.log('Browser compatibility check passed');
+                return true;
+                
+            } catch (error) {
+                console.error('Browser check error:', error);
+                errorMessage.textContent = 'An error occurred during compatibility check. Please try a different browser.';
+                errorMessage.style.display = 'block';
+                return false;
+            }
+        }
+        
+        // Run the browser check when the page loads
+        window.addEventListener('load', checkBrowserAndSupabase);
+
+        // Function to check what columns exist in profiles table
+        async function checkProfilesTableStructure() {
+            try {
+                // Get a single record to examine its structure
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .limit(1);
+                    
+                if (error) {
+                    console.error('Could not examine profiles table:', error);
+                    return;
+                }
+                
+                if (!data || data.length === 0) {
+                    console.log('No profiles found. Creating a test profile to examine structure...');
+                    
+                    // Try to insert a minimal profile
+                    const { data: testData, error: testError } = await supabase
+                        .from('profiles')
+                        .insert({ id: 'test-profile-structure' })
+                        .select();
+                        
+                    if (testError) {
+                        console.error('Could not create test profile:', testError);
+                        return;
+                    }
+                    
+                    if (testData && testData.length > 0) {
+                        console.log('Available columns in profiles table:', Object.keys(testData[0]));
+                        
+                        // Clean up test data
+                        await supabase
+                            .from('profiles')
+                            .delete()
+                            .eq('id', 'test-profile-structure');
+                    }
+                } else {
+                    console.log('Available columns in profiles table:', Object.keys(data[0]));
+                }
+            } catch (error) {
+                console.error('Error examining profiles table:', error);
+            }
+        }
+        
+        // Run the check on page load
+        window.addEventListener('load', checkProfilesTableStructure);
     </script>
 </body>
 </html>

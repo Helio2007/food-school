@@ -11,6 +11,7 @@ function addToCart(item, qty = 1) {
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
+  console.log("Item added to cart:", item, "Total cart:", cart);
   updateCartCount();
 }
 

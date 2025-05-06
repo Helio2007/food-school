@@ -367,7 +367,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
         
         // Fix: Correctly initialize Supabase client
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         let currentUser = null;
         let userProfile = null;
@@ -400,7 +400,15 @@
         // Check if user is logged in and fetch profile data
         async function checkAuthAndLoadProfile() {
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
+                const { data, error: authError } = await supabase.auth.getUser();
+                
+                if (authError) {
+                    console.error('Authentication error details:', authError);
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const user = data.user;
                 
                 if (!user) {
                     // Redirect to login page if not logged in
@@ -408,24 +416,26 @@
                     return;
                 }
                 
+                console.log('User logged in:', user.id);
                 currentUser = user;
                 
                 // Fetch user's profile data
-                const { data, error } = await supabaseClient
+                const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', user.id)
                     .single();
                 
-                if (error) {
-                    console.error('Error fetching profile:', error);
+                if (profileError) {
+                    console.error('Error fetching profile details:', profileError);
                     
                     // Create profile if it doesn't exist
                     await createUserProfile(user);
                     return;
                 }
                 
-                userProfile = data;
+                console.log('Profile loaded:', profile);
+                userProfile = profile;
                 
                 // Populate the profile form
                 populateProfileForm();
@@ -436,7 +446,7 @@
                 }
                 
             } catch (error) {
-                console.error('Auth check error:', error);
+                console.error('Auth check error details:', error);
                 // Redirect to login page if there's an error
                 window.location.href = 'login.html';
             }
@@ -445,27 +455,32 @@
         // Create user profile if it doesn't exist
         async function createUserProfile(user) {
             try {
-                const { data, error } = await supabaseClient
+                console.log('Creating new profile for user:', user.id);
+                
+                // Only include columns that exist in the profiles table
+                const profileData = {
+                    id: user.id,
+                    phone: '' // Initialize with empty phone
+                };
+                
+                console.log('Profile data to insert:', profileData);
+                
+                const { data, error } = await supabase
                     .from('profiles')
-                    .insert([
-                        {
-                            id: user.id,
-                            email: user.email,
-                            created_at: new Date().toISOString()
-                        }
-                    ])
+                    .insert(profileData)
                     .select();
                 
                 if (error) {
-                    console.error('Error creating profile:', error);
+                    console.error('Error creating profile details:', error);
                     return;
                 }
                 
+                console.log('Profile created successfully:', data);
                 userProfile = data[0];
                 populateProfileForm();
                 
             } catch (error) {
-                console.error('Profile creation error:', error);
+                console.error('Profile creation error details:', error);
             }
         }
         
@@ -473,16 +488,27 @@
         function populateProfileForm() {
             if (!userProfile) return;
             
-            document.getElementById('full-name').value = userProfile.full_name || '';
-            document.getElementById('email').value = userProfile.email || currentUser.email || '';
+            // We can't set full_name since it doesn't exist in the database
+            // Just setting email based on the user's auth data
+            document.getElementById('full-name').value = '';  // Can't populate this
+            document.getElementById('email').value = currentUser.email || '';
             document.getElementById('phone').value = userProfile.phone || '';
             
-            // Populate address fields if available
-            if (userProfile.address_line_1) {
-                document.getElementById('address-line-1').value = userProfile.address_line_1 || '';
-                document.getElementById('address-line-2').value = userProfile.address_line_2 || '';
-                document.getElementById('city').value = userProfile.city || '';
-                document.getElementById('postal-code').value = userProfile.postal_code || '';
+            // Populate address field if available
+            if (userProfile.address) {
+                // Try to parse parts from the single address field
+                const addressParts = userProfile.address.split(',').map(part => part.trim());
+                
+                if (addressParts.length >= 3) {
+                    document.getElementById('address-line-1').value = addressParts[0] || '';
+                    // If there are more than 3 parts, the second part might be address line 2
+                    document.getElementById('address-line-2').value = addressParts.length > 3 ? addressParts[1] : '';
+                    document.getElementById('city').value = addressParts[addressParts.length - 2] || '';
+                    document.getElementById('postal-code').value = addressParts[addressParts.length - 1] || '';
+                } else {
+                    // Just put the whole address in line 1 if we can't parse it
+                    document.getElementById('address-line-1').value = userProfile.address || '';
+                }
             }
         }
         
@@ -493,37 +519,42 @@
             const errorMessage = document.getElementById('error-message');
             const successMessage = document.getElementById('success-message');
             
-            const fullName = document.getElementById('full-name').value;
             const phone = document.getElementById('phone').value;
             
             try {
-                const { data, error } = await supabaseClient
+                console.log('Updating profile for user:', currentUser.id);
+                
+                const updateData = {
+                    phone: phone
+                };
+                
+                console.log('Profile update data:', updateData);
+                
+                const { data, error } = await supabase
                     .from('profiles')
-                    .update({
-                        full_name: fullName,
-                        phone: phone,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', currentUser.id);
+                    .update(updateData)
+                    .eq('id', currentUser.id)
+                    .select();
                 
                 if (error) {
+                    console.error('Profile update error details:', error);
                     errorMessage.textContent = error.message;
                     errorMessage.style.display = 'block';
                     successMessage.style.display = 'none';
                 } else {
+                    console.log('Profile updated successfully:', data);
                     successMessage.textContent = 'Profile updated successfully!';
                     successMessage.style.display = 'block';
                     errorMessage.style.display = 'none';
                     
                     // Update the user profile data
-                    userProfile.full_name = fullName;
                     userProfile.phone = phone;
                 }
             } catch (error) {
+                console.error('Profile update error details:', error);
                 errorMessage.textContent = 'An error occurred. Please try again.';
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
-                console.error('Profile update error:', error);
             }
         });
         
@@ -540,37 +571,40 @@
             const postalCode = document.getElementById('postal-code').value;
             
             try {
-                const { data, error } = await supabaseClient
+                console.log('Updating address for user:', currentUser.id);
+                
+                const addressData = {
+                    address: addressLine1 + (addressLine2 ? ", " + addressLine2 : "") + ", " + city + ", " + postalCode
+                    // Combine all address fields into one since profiles table only has a single address column
+                };
+                
+                console.log('Address update data:', addressData);
+                
+                const { data, error } = await supabase
                     .from('profiles')
-                    .update({
-                        address_line_1: addressLine1,
-                        address_line_2: addressLine2,
-                        city: city,
-                        postal_code: postalCode,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', currentUser.id);
+                    .update(addressData)
+                    .eq('id', currentUser.id)
+                    .select();
                 
                 if (error) {
+                    console.error('Address update error details:', error);
                     errorMessage.textContent = error.message;
                     errorMessage.style.display = 'block';
                     successMessage.style.display = 'none';
                 } else {
+                    console.log('Address updated successfully:', data);
                     successMessage.textContent = 'Address updated successfully!';
                     successMessage.style.display = 'block';
                     errorMessage.style.display = 'none';
                     
                     // Update the user profile data
-                    userProfile.address_line_1 = addressLine1;
-                    userProfile.address_line_2 = addressLine2;
-                    userProfile.city = city;
-                    userProfile.postal_code = postalCode;
+                    userProfile.address = addressLine1 + (addressLine2 ? ", " + addressLine2 : "") + ", " + city + ", " + postalCode;
                 }
             } catch (error) {
+                console.error('Address update error details:', error);
                 errorMessage.textContent = 'An error occurred. Please try again.';
                 errorMessage.style.display = 'block';
                 successMessage.style.display = 'none';
-                console.error('Address update error:', error);
             }
         });
         
@@ -581,7 +615,7 @@
             const ordersContainer = document.getElementById('orders-container');
             
             try {
-                const { data: orders, error } = await supabaseClient
+                const { data: orders, error } = await supabase
                     .from('orders')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -663,7 +697,7 @@
         // Handle logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
             try {
-                const { error } = await supabaseClient.auth.signOut();
+                const { error } = await supabase.auth.signOut();
                 
                 if (error) {
                     console.error('Logout error:', error);
