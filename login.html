@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Food Delivery Website</title>
+    <title>Food School - Login</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
-    <!-- Hover CSS -->
-    <link rel="stylesheet" href="css/hover-min.css">
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!--Map-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="live-map.css">
@@ -92,6 +92,10 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .btn-auth:hover {
@@ -137,19 +141,18 @@
                 <!-- Main Menu -->
                 <div class="menu text-right">
                     <ul>
-                        <li><a class="hvr-underline-from-center" href="index.html">Home</a></li>
-                        <li><a class="hvr-underline-from-center" href="categories.html">Categories</a></li>
-                        <li><a class="hvr-underline-from-center" href="foods.html">Foods</a></li>
-                        <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
-                        <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
-                        <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
-                        <li class="cart">
-                            <a href="order.html" class="cart-icon">
-                              <i class="fas fa-shopping-cart"></i>
-                              <span id="cart-count">0</span>
+                        <li><a class="hvr-underline-from-center" href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a class="hvr-underline-from-center" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
+                        <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a class="hvr-underline-from-center active" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li class="cart-container">
+                            <a href="order.html" class="cart-link" id="cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count">0</span>
                             </a>
-                        </li>
                             <div id="cart-content" class="cart-content">
                                 <h3 class="text-center">Shopping Cart</h3>
                                 <table class="cart-table" border="0">
@@ -161,37 +164,9 @@
                                         <th>Total</th>
                                         <th>Action</th>
                                     </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/p1.jpg" alt="Food"></td>
-                                        <td>Pizza</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/food/s1.jpg" alt="Food"></td>
-                                        <td>Sandwich</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/food/b1.jpg" alt="Food"></td>
-                                        <td>Burder</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="4">Total</th>
-                                        <th>$24.00$</th>
-                                        <th></th>
-                                    </tr>
+                                    <!-- Cart items will be inserted by JavaScript -->
                                 </table>
-                                <a href="order.html" class="btn-primary">Confirm Order</a>
+                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
                             </div>
                         </li>
                     </ul>
@@ -204,8 +179,8 @@
     <!-- Auth Section Start -->
     <div class="auth-container">
         <div class="tabs">
-            <div class="tab active" data-tab="login">Login</div>
-            <div class="tab" data-tab="signup">Sign Up</div>
+            <div class="tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Login</div>
+            <div class="tab" data-tab="signup"><i class="fas fa-user-plus"></i> Sign Up</div>
         </div>
         
         <div id="error-message" class="error-message"></div>
@@ -213,17 +188,18 @@
         
         <div id="login-tab" class="tab-content active">
             <h2>Login to Your Account</h2>
+            <div class="heading-border"></div>
             <form id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Email</label>
+                    <label for="login-email"><i class="fas fa-envelope"></i> Email</label>
                     <input type="email" id="login-email" required>
                 </div>
                 <div class="form-group">
-                    <label for="login-password">Password</label>
+                    <label for="login-password"><i class="fas fa-lock"></i> Password</label>
                     <input type="password" id="login-password" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn-auth">Login</button>
+                    <button type="submit" class="btn-auth"><i class="fas fa-sign-in-alt"></i> Login</button>
                 </div>
                 <div class="form-footer">
                     <p>Don't have an account? <a href="#" onclick="switchTab('signup')">Sign up</a></p>
@@ -233,25 +209,26 @@
         
         <div id="signup-tab" class="tab-content">
             <h2>Create an Account</h2>
+            <div class="heading-border"></div>
             <form id="signup-form">
                 <div class="form-group">
-                    <label for="signup-name">Full Name</label>
+                    <label for="signup-name"><i class="fas fa-user"></i> Full Name</label>
                     <input type="text" id="signup-name" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-email">Email</label>
+                    <label for="signup-email"><i class="fas fa-envelope"></i> Email</label>
                     <input type="email" id="signup-email" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-phone">Phone Number</label>
+                    <label for="signup-phone"><i class="fas fa-phone"></i> Phone Number</label>
                     <input type="tel" id="signup-phone" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-password">Password</label>
+                    <label for="signup-password"><i class="fas fa-lock"></i> Password</label>
                     <input type="password" id="signup-password" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn-auth">Sign Up</button>
+                    <button type="submit" class="btn-auth"><i class="fas fa-user-plus"></i> Sign Up</button>
                 </div>
                 <div class="form-footer">
                     <p>Already have an account? <a href="#" onclick="switchTab('login')">Login</a></p>
@@ -267,27 +244,27 @@
             <div class="grid-3">
                 <div class="text-center">
                     <h3>About Us</h3><br>
-                    <p>Fresh, fast, and at your doorstep! 🚀 Our food delivery app connects you with your favorite restaurants, bringing delicious meals right to you—hot, fresh, and hassle-free. Order now and taste the convenience! 🍽️🔥</p>
+                    <p>Our food delivery platform connects you with your favorite local restaurants, bringing culinary delights right to your doorstep.</p>
                 </div>
-                <div class="texr-center">
+                <div class="text-center">
                     <h3>Site Map</h3><br>
                     <div class="site-links">
-                        <a href="categories.html">Categories</a>
-                        <a href="foods.html">Foods</a>
-                        <a href="order.html">Order</a>
-                        <a href="contact.html">Contact</a>
-                        <a href="login.html">Login</a>
+                        <a href="categories.html"><i class="fas fa-list"></i> Categories</a>
+                        <a href="foods.html"><i class="fas fa-utensils"></i> Foods</a>
+                        <a href="order.html"><i class="fas fa-shopping-bag"></i> Order</a>
+                        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                        <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
                     </div>
                 </div>
                 <div class="social-links">
                     <h3>Social Links</h3><br>
                     <div class="social">
                         <ul>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/facebook-new.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/fluency/48/null/instagram-new.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/twitter--v1.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/linkedin-circled--v1.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/youtube-play.png"/></a></li>
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -295,8 +272,6 @@
         </div>
     </section>
     <!-- Footer Section End -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="live-map.js"></script>
     
     <!-- Map popup -->
     <div class="map-popup">
@@ -305,7 +280,10 @@
         <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
     </div>
 
-    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
+    <button class="open-map-btn" onclick="openMap()"><i class="fas fa-map-marker-alt"></i> Track Order</button>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="live-map.js"></script>
     
     <!-- Auth Script -->
     <script>
@@ -511,141 +489,19 @@
         // Check auth state on page load
         checkAuthState();
 
-        // Function to check database structure
-        async function checkDatabaseStructure() {
-            try {
-                // Check if tables exist
-                console.log('Checking database structure...');
-                
-                // Check profiles table
-                const { data: profileData, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .limit(1);
-                    
-                console.log('Profiles table check:', profileError ? 'Error' : 'Success');
-                if (profileError) console.error('Profiles table error:', profileError);
-                
-                // Check orders table
-                const { data: orderData, error: orderError } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .limit(1);
-                    
-                console.log('Orders table check:', orderError ? 'Error' : 'Success');
-                if (orderError) console.error('Orders table error:', orderError);
-                
-                // Check order_items table
-                const { data: itemData, error: itemError } = await supabase
-                    .from('order_items')
-                    .select('*')
-                    .limit(1);
-                    
-                console.log('Order items table check:', itemError ? 'Error' : 'Success');
-                if (itemError) console.error('Order items table error:', itemError);
-                
-            } catch (error) {
-                console.error('Database check error:', error);
+        // Update cart count from local storage
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            const cartCount = document.getElementById("cart-count");
+            if (cartCount) {
+                cartCount.textContent = cart.length;
             }
         }
         
-        // Run check on page load
-        window.addEventListener('load', checkDatabaseStructure);
-
-        // Function to check browser compatibility and Supabase connection
-        async function checkBrowserAndSupabase() {
-            const errorMessage = document.getElementById('error-message');
-            
-            try {
-                console.log('Checking browser compatibility...');
-                
-                // Check if localStorage is available
-                if (typeof localStorage === 'undefined') {
-                    console.error('localStorage is not available');
-                    errorMessage.textContent = 'Your browser does not support local storage, which is required for authentication.';
-                    errorMessage.style.display = 'block';
-                    return false;
-                }
-                
-                // Check if IndexedDB is available (used by Supabase Auth)
-                if (typeof indexedDB === 'undefined') {
-                    console.error('indexedDB is not available');
-                    errorMessage.textContent = 'Your browser does not support IndexedDB, which is required for authentication.';
-                    errorMessage.style.display = 'block';
-                    return false;
-                }
-                
-                // Check connection to Supabase
-                const { data, error } = await supabase.auth.getSession();
-                
-                if (error) {
-                    console.error('Supabase connection error:', error);
-                    errorMessage.textContent = 'Could not connect to authentication service. Please check your internet connection.';
-                    errorMessage.style.display = 'block';
-                    return false;
-                }
-                
-                console.log('Browser compatibility check passed');
-                return true;
-                
-            } catch (error) {
-                console.error('Browser check error:', error);
-                errorMessage.textContent = 'An error occurred during compatibility check. Please try a different browser.';
-                errorMessage.style.display = 'block';
-                return false;
-            }
-        }
-        
-        // Run the browser check when the page loads
-        window.addEventListener('load', checkBrowserAndSupabase);
-
-        // Function to check what columns exist in profiles table
-        async function checkProfilesTableStructure() {
-            try {
-                // Get a single record to examine its structure
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .limit(1);
-                    
-                if (error) {
-                    console.error('Could not examine profiles table:', error);
-                    return;
-                }
-                
-                if (!data || data.length === 0) {
-                    console.log('No profiles found. Creating a test profile to examine structure...');
-                    
-                    // Try to insert a minimal profile
-                    const { data: testData, error: testError } = await supabase
-                        .from('profiles')
-                        .insert({ id: 'test-profile-structure' })
-                        .select();
-                        
-                    if (testError) {
-                        console.error('Could not create test profile:', testError);
-                        return;
-                    }
-                    
-                    if (testData && testData.length > 0) {
-                        console.log('Available columns in profiles table:', Object.keys(testData[0]));
-                        
-                        // Clean up test data
-                        await supabase
-                            .from('profiles')
-                            .delete()
-                            .eq('id', 'test-profile-structure');
-                    }
-                } else {
-                    console.log('Available columns in profiles table:', Object.keys(data[0]));
-                }
-            } catch (error) {
-                console.error('Error examining profiles table:', error);
-            }
-        }
-        
-        // Run the check on page load
-        window.addEventListener('load', checkProfilesTableStructure);
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
     </script>
 </body>
 </html>

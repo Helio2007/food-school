@@ -200,19 +200,18 @@
                 <!-- Main Menu -->
                 <div class="menu text-right">
                     <ul>
-                        <li><a class="hvr-underline-from-center" href="index.html">Home</a></li>
-                        <li><a class="hvr-underline-from-center" href="categories.html">Categories</a></li>
-                        <li><a class="hvr-underline-from-center" href="foods.html">Foods</a></li>
-                        <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
-                        <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
-                        <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
-                        <li class="cart">
-                          <a href="order.html" class="cart-icon">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span id="cart-count">0</span>
-                          </a>
-                      </li>
+                        <li><a class="hvr-underline-from-center" href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a class="hvr-underline-from-center" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
+                        <li><a class="hvr-underline-from-center active" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li class="cart-container">
+                            <a href="#" class="cart-link" id="cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count">0</span>
+                            </a>
                             <div id="cart-content" class="cart-content">
                                 <h3 class="text-center">Shopping Cart</h3>
                                 <table class="cart-table" border="0">
@@ -224,37 +223,8 @@
                                         <th>Total</th>
                                         <th>Action</th>
                                     </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/p1.jpg" alt="Food"></td>
-                                        <td>Pizza</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/s1.jpg" alt="Food"></td>
-                                        <td>Sandwich</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/b1.jpg" alt="Food"></td>
-                                        <td>Burder</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="4">Total</th>
-                                        <th>$24.00$</th>
-                                        <th></th>
-                                    </tr>
                                 </table>
-                                <a href="order.html" class="btn-primary">Confirm Order</a>
+                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
                             </div>
                         </li>
                     </ul>
@@ -352,7 +322,19 @@
         // Fix: Use the global supabase object from the imported library
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        // Check both new and old storage formats
+        let cart = [];
+        const savedCart = localStorage.getItem("foodCart") || localStorage.getItem("cart");
+        if (savedCart) {
+          try {
+            cart = JSON.parse(savedCart);
+            console.log("Loaded cart from storage:", cart);
+          } catch (error) {
+            console.error("Error parsing cart data:", error);
+            cart = [];
+          }
+        }
+        
         let total = 0;
         let deliveryOption = "asap";
         let scheduledTime = null;
@@ -369,8 +351,12 @@
           tableBody.appendChild(row);
         } else {
           cart.forEach((item, index) => {
-            const imgPath = `assets/img/${item.name.toLowerCase()}.jpg`;
+            const imgPath = item.image || `assets/img/${item.name.toLowerCase()}.jpg`;
             console.log("Image path:", imgPath);
+            
+            // Handle both old (qty) and new (quantity) formats
+            const quantity = item.qty || item.quantity || 1;
+            const itemTotal = item.total || (item.price * quantity);
             
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -378,11 +364,11 @@
               <td><img src="${imgPath}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
               <td>${item.name}</td>
               <td>$${item.price.toFixed(2)}</td>
-              <td>${item.qty}</td>
-              <td>$${item.total.toFixed(2)}</td>
+              <td>${quantity}</td>
+              <td>$${itemTotal.toFixed(2)}</td>
               <td><button onclick="removeItem(${index})">&times;</button></td>
             `;
-            total += item.total;
+            total += itemTotal;
             tableBody.appendChild(row);
           });
         }
@@ -391,7 +377,17 @@
     
         function removeItem(index) {
           cart.splice(index, 1);
+          
+          // Update both cart storage locations for compatibility
           localStorage.setItem("cart", JSON.stringify(cart));
+          localStorage.setItem("foodCart", JSON.stringify(cart.map(item => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.qty || item.quantity,
+            image: item.image,
+            total: item.price * (item.qty || item.quantity)
+          }))));
+          
           location.reload();
         }
     
@@ -549,11 +545,14 @@
             
             for (const item of cart) {
               try {
+                // Handle both old and new cart formats
+                const quantity = item.qty || item.quantity || 1;
+                
                 // Try with minimal fields
                 const itemData = {
                   order_id: orderResult[0].id,
                   product_name: item.name,
-                  quantity: item.qty
+                  quantity: quantity
                 };
                 
                 console.log('Creating minimal order item:', itemData);
@@ -597,8 +596,9 @@
             
             console.log('Order process completed');
             
-            // Clear the cart
+            // Clear the cart from both storage locations
             localStorage.removeItem("cart");
+            localStorage.removeItem("foodCart");
             alert('Order submitted successfully! Redirecting to payment...');
             
             // Continue to payment page
@@ -613,8 +613,19 @@
         }
     
         function updateCartCount() {
-          const cart = JSON.parse(localStorage.getItem("cart")) || [];
-          const count = cart.reduce((acc, item) => acc + item.qty, 0);
+          // Check both new and old storage locations
+          const savedCart = localStorage.getItem("foodCart") || localStorage.getItem("cart");
+          let cartItems = [];
+          
+          if (savedCart) {
+            try {
+              cartItems = JSON.parse(savedCart);
+            } catch (error) {
+              console.error("Error parsing cart data in updateCartCount:", error);
+            }
+          }
+          
+          const count = cartItems.reduce((acc, item) => acc + (item.qty || item.quantity || 1), 0);
           const cartCount = document.getElementById("cart-count");
           if (cartCount) cartCount.textContent = count;
         }

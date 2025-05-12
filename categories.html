@@ -6,18 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Food Delivery Website</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
-    <!-- Hover CSS -->
-    <link rel="stylesheet" href="css/hover-min.css">
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!--Map-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="live-map.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
     <script src="custom.js"></script>
-<script src="cart.js"></script>
+    <script src="cart.js"></script>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -33,19 +33,18 @@
                 <!-- Main Menu -->
                 <div class="menu text-right">
                     <ul>
-                        <li><a class="hvr-underline-from-center" href="index.html">Home</a></li>
-                        <li><a class="hvr-underline-from-center" href="categories.html">Categories</a></li>
-                        <li><a class="hvr-underline-from-center" href="foods.html">Foods</a></li>
-                        <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
-                        <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
-                        <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
-                        <li class="cart">
-                            <a href="order.html" class="cart-icon">
-                              <i class="fas fa-shopping-cart"></i>
-                              <span id="cart-count">0</span>
+                        <li><a class="hvr-underline-from-center" href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a class="hvr-underline-from-center active" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
+                        <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li class="cart-container">
+                            <a href="order.html" class="cart-link" id="cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count">0</span>
                             </a>
-                        </li>
                             <div id="cart-content" class="cart-content">
                                 <h3 class="text-center">Shopping Cart</h3>
                                 <table class="cart-table" border="0">
@@ -57,37 +56,8 @@
                                         <th>Total</th>
                                         <th>Action</th>
                                     </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/p1.jpg" alt="Food"></td>
-                                        <td>Pizza</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/s1.jpg" alt="Food"></td>
-                                        <td>Sandwich</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/b1.jpg" alt="Food"></td>
-                                        <td>Burder</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="4">Total</th>
-                                        <th>$24.00$</th>
-                                        <th></th>
-                                    </tr>
                                 </table>
-                                <a href="order.html" class="btn-primary">Confirm Order</a>
+                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
                             </div>
                         </li>
                     </ul>
@@ -106,38 +76,38 @@
             <div class="grid-3">
                 <a href="categories-foods.html">
                     <div class="float-container">
-                        <img src="../assets/img/pizza.jpg" class="img-responsive" alt="">
+                        <img src="../assets/img/pizza.jpg" class="img-responsive img-category" alt="">
                         <h3 class="float-text text-white">Pizza</h3>
                     </div>
                 </a>
                 <a href="categories-foods.html">
                     <div class="float-container">
-                        <img src="../assets/img/sandwich.jpg" class="img-responsive" alt="">
+                        <img src="../assets/img/sandwich.jpg" class="img-responsive img-category" alt="">
                         <h3 class="float-text text-white">Sandwich</h3>
                     </div>
                 </a>
                 <a href="categories-foods.html">
                     <div class="float-container">
-                        <img src="../assets/img/burger.jpg" class="img-responsive" alt="">
+                        <img src="../assets/img/burger.jpg" class="img-responsive img-category" alt="">
                         <h3 class="float-text text-white">Burger</h3>
                     </div>
                 </a>
                 <a href="categories-foods.html">
                     <div class="float-container">
-                        <img src="../assets/img/sushi.jpg" class="img-responsive" alt="">
-                        <h3 class="float-text text-white">Pizza</h3>
+                        <img src="../assets/img/sushi.jpg" class="img-responsive img-category" alt="">
+                        <h3 class="float-text text-white">Sushi</h3>
                     </div>
                 </a>
                 <a href="categories-foods.html">
                     <div class="float-container">
-                        <img src="../assets/img/dessert.jpg" class="img-responsive" alt="">
-                        <h3 class="float-text text-white">Sandwich</h3>
+                        <img src="../assets/img/dessert.jpg" class="img-responsive img-category" alt="">
+                        <h3 class="float-text text-white">Dessert</h3>
                     </div>
                 </a>
                 <a href="categories-foods.html">
                     <div class="float-container">
-                        <img src="../assets/img/steak.jpg" class="img-responsive" alt="">
-                        <h3 class="float-text text-white">Burger</h3>
+                        <img src="../assets/img/steak.jpg" class="img-responsive img-category" alt="">
+                        <h3 class="float-text text-white">Steak</h3>
                     </div>
                 </a>
             </div>
@@ -156,22 +126,22 @@
                 <div class="texr-center">
                     <h3>Site Map</h3><br>
                     <div class="site-links">
-                        <a href="categories.html">Categories</a>
-                        <a href="foods.html">Foods</a>
-                        <a href="order.html">Order</a>
-                        <a href="contact.html">Contact</a>
-                        <a href="login.html">Login</a>
+                        <a href="categories.html"><i class="fas fa-list"></i> Categories</a>
+                        <a href="foods.html"><i class="fas fa-utensils"></i> Foods</a>
+                        <a href="order.html"><i class="fas fa-shopping-bag"></i> Order</a>
+                        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                        <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
                     </div>
                 </div>
                 <div class="social-links">
                     <h3>Social Links</h3><br>
                     <div class="social">
                         <ul>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/facebook-new.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/fluency/48/null/instagram-new.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/twitter--v1.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/linkedin-circled--v1.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/youtube-play.png"/></a></li>
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -189,6 +159,6 @@
         <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
     </div>
 
-    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
+    <button class="open-map-btn" onclick="openMap()"><i class="fas fa-map-marker-alt"></i> Track Order</button>
 </body>
 </html>

@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Food Delivery Website</title>
+    <title>Food School - Foods Menu</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
-    <!-- Hover CSS -->
-    <link rel="stylesheet" href="css/hover-min.css">
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!--Map-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="live-map.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
     <script src="custom.js"></script>
-<script src="cart.js"></script>
+    <script src="cart.js"></script>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -33,19 +33,18 @@
                 <!-- Main Menu -->
                 <div class="menu text-right">
                     <ul>
-                        <li><a class="hvr-underline-from-center" href="index.html">Home</a></li>
-                        <li><a class="hvr-underline-from-center" href="categories.html">Categories</a></li>
-                        <li><a class="hvr-underline-from-center" href="foods.html">Foods</a></li>
-                        <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
-                        <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
-                        <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
-                        <li class="cart">
-                            <a href="order.html" class="cart-icon">
-                              <i class="fas fa-shopping-cart"></i>
-                              <span id="cart-count">0</span>
+                        <li><a class="hvr-underline-from-center" href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a class="hvr-underline-from-center" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a class="hvr-underline-from-center active" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
+                        <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li class="cart-container">
+                            <a href="order.html" class="cart-link" id="cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count">0</span>
                             </a>
-                        </li>
                             <div id="cart-content" class="cart-content">
                                 <h3 class="text-center">Shopping Cart</h3>
                                 <table class="cart-table" border="0">
@@ -57,37 +56,8 @@
                                         <th>Total</th>
                                         <th>Action</th>
                                     </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/p1.jpg" alt="Food"></td>
-                                        <td>Pizza</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/food/s1.jpg" alt="Food"></td>
-                                        <td>Sandwich</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/food/b1.jpg" alt="Food"></td>
-                                        <td>Burder</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="4">Total</th>
-                                        <th>$24.00$</th>
-                                        <th></th>
-                                    </tr>
                                 </table>
-                                <a href="order.html" class="btn-primary">Confirm Order</a>
+                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
                             </div>
                         </li>
                     </ul>
@@ -100,8 +70,8 @@
     <!-- Food Search Section Start -->
     <section class="food-search text-center" >
         <div class="container">
-            <form action="">
-                <input type="search" placeholder="Search for food..." required>
+            <form action="" onsubmit="return searchFood(event)">
+                <input type="search" id="searchInput" placeholder="Search for food..." required>
                 <input type="submit" value="Search" class="btn-search">
             </form>
         </div>
@@ -111,120 +81,136 @@
     <!-- Foods Section Start -->
     <section class="food-menu">
         <div class="container">
-            <h2 class="text-center">Food Menu</h2>
+            <h2 class="text-center">Our Food Menu</h2>
             <div class="heading-border"></div>
             <div class="grid-2">
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/p2.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/p2.png" alt="Pasta" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Pasta</h4>
+                        <p class="food-price">$8.99</p>
+                        <p class="food-details">Classic Italian delight, served with rich sauces and fresh ingredients.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Pasta", price: 8.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Pasta</h4>
-                            <p class="food-price">$8.99</p>
-                            <p class="food-details">Classic Italian delight, served with rich sauces and fresh ingredients.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Pasta", price: 8.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s3.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s3.png" alt="Steak" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Steak</h4>
+                        <p class="food-price">$15.99</p>
+                        <p class="food-details">Grilled to perfection, tender and juicy—made for true meat lovers.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Steak", price: 15.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Steak</h4>
-                            <p class="food-price">$15.99</p>
-                            <p class="food-details">Grilled to perfection, tender and juicy—made for true meat lovers.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Steak", price: 15.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s2.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s2.png" alt="Sushi" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Sushi</h4>
+                        <p class="food-price">$12.99</p>
+                        <p class="food-details">Delicate, fresh, and full of flavor—crafted with care and tradition.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Sushi", price: 12.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Sushi</h4>
-                            <p class="food-price">$12.99</p>
-                            <p class="food-details">Delicate, fresh, and full of flavor—crafted with care and tradition.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Sushi", price: 12.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/p1.jpg" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/p1.jpg" alt="Pizza" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Pizza</h4>
+                        <p class="food-price">$9.99</p>
+                        <p class="food-details">Crispy crust, melty cheese, and toppings you'll crave again and again.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Pizza", price: 9.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Pizza</h4>
-                            <p class="food-price">$9.99</p>
-                            <p class="food-details">Crispy crust, melty cheese, and toppings you'll crave again and again.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Pizza", price: 9.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s1.jpg" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s1.jpg" alt="Sandwich" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Sandwich</h4>
+                        <p class="food-price">$5.49</p>
+                        <p class="food-details">Stacked with flavor, layered with fresh fillings for a quick bite.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Sandwich", price: 5.49 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Sandwich</h4>
-                            <p class="food-price">$5.49</p>
-                            <p class="food-details">Stacked with flavor, layered with fresh fillings for a quick bite.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Sandwich", price: 5.49 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/b1.jpg" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/b1.jpg" alt="Burger" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Burger</h4>
+                        <p class="food-price">$6.99</p>
+                        <p class="food-details">Juicy patties, melted cheese, and soft buns—comfort food at its best.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Burger", price: 6.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Burger</h4>
-                            <p class="food-price">$6.99</p>
-                            <p class="food-details">Juicy patties, melted cheese, and soft buns—comfort food at its best.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Burger", price: 6.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/d1.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/d1.png" alt="Dessert" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Dessert</h4>
+                        <p class="food-price">$4.50</p>
+                        <p class="food-details">Sweet treats to satisfy every craving, from cakes to creamy delights.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Dessert", price: 4.50 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Dessert</h4>
-                            <p class="food-price">$4.50</p>
-                            <p class="food-details">Sweet treats to satisfy every craving, from cakes to creamy delights.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Dessert", price: 4.50 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s4.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s4.png" alt="Salad" class="food-img">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Salad</h4>
+                        <p class="food-price">$5.99</p>
+                        <p class="food-details">Fresh, crunchy, and wholesome—healthy never tasted this good.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Salad", price: 5.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Salad</h4>
-                            <p class="food-price">$5.99</p>
-                            <p class="food-details">Fresh, crunchy, and wholesome—healthy never tasted this good.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Salad", price: 5.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -237,27 +223,27 @@
             <div class="grid-3">
                 <div class="text-center">
                     <h3>About Us</h3><br>
-                    <p>Fresh, fast, and at your doorstep! 🚀 Our food delivery app connects you with your favorite restaurants, bringing delicious meals right to you—hot, fresh, and hassle-free. Order now and taste the convenience! 🍽️🔥</p>
+                    <p>Our food delivery platform connects you with your favorite local restaurants, bringing culinary delights right to your doorstep.</p>
                 </div>
-                <div class="texr-center">
+                <div class="text-center">
                     <h3>Site Map</h3><br>
                     <div class="site-links">
-                        <a href="categories.html">Categories</a>
-                        <a href="foods.html">Foods</a>
-                        <a href="order.html">Order</a>
-                        <a href="contact.html">Contact</a>
-                        <a href="login.html">Login</a>
+                        <a href="categories.html"><i class="fas fa-list"></i> Categories</a>
+                        <a href="foods.html"><i class="fas fa-utensils"></i> Foods</a>
+                        <a href="order.html"><i class="fas fa-shopping-bag"></i> Order</a>
+                        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                        <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
                     </div>
                 </div>
                 <div class="social-links">
                     <h3>Social Links</h3><br>
                     <div class="social">
                         <ul>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/facebook-new.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/fluency/48/null/instagram-new.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/twitter--v1.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/linkedin-circled--v1.png"/></a></li>
-                            <li><a href="#"><img src="https://img.icons8.com/color/48/null/youtube-play.png"/></a></li>
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -266,9 +252,6 @@
     </section>
     <!-- Footer Section End -->
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="live-map.js"></script>
-    
     <!-- Map popup -->
     <div class="map-popup">
         <button class="close-btn" onclick="closeMap()">×</button>
@@ -276,6 +259,90 @@
         <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
     </div>
 
-    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
+    <button class="open-map-btn" onclick="openMap()"><i class="fas fa-map-marker-alt"></i> Track Order</button>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="live-map.js"></script>
+    
+    <!-- Search results handling script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Process search query from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchQuery = urlParams.get('search');
+            
+            if (searchQuery) {
+                // Update the search input field with the search query
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = searchQuery;
+                }
+                
+                // Add a search results heading
+                const foodMenuHeading = document.querySelector('.food-menu h2');
+                if (foodMenuHeading) {
+                    foodMenuHeading.innerHTML = `Search Results for "${searchQuery}"`;
+                }
+                
+                // Filter food items based on search query
+                filterFoodItems(searchQuery);
+            }
+            
+            // Function to filter food items based on search query
+            function filterFoodItems(query) {
+                query = query.toLowerCase();
+                const foodItems = document.querySelectorAll('.food-menu-box');
+                let matchCount = 0;
+                
+                foodItems.forEach(item => {
+                    const foodName = item.querySelector('h4').innerText.toLowerCase();
+                    const foodDesc = item.querySelector('.food-details').innerText.toLowerCase();
+                    
+                    // Check if food name or description contains the query
+                    if (foodName.includes(query) || foodDesc.includes(query)) {
+                        item.style.display = 'block';
+                        // Add highlight to the matched item
+                        item.style.animation = 'highlight 1.5s ease';
+                        matchCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Add animation style
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes highlight {
+                        0% { transform: translateY(0); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+                        50% { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2); }
+                        100% { transform: translateY(0); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // Show message if no results found
+                if (matchCount === 0) {
+                    const noResultsMsg = document.createElement('div');
+                    noResultsMsg.className = 'no-results';
+                    noResultsMsg.innerHTML = `
+                        <div style="text-align: center; padding: 30px; margin: 20px auto; max-width: 600px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                            <i class="fas fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                            <h3>No foods found matching "${query}"</h3>
+                            <p>Try a different search term or browse our categories.</p>
+                            <a href="categories.html" class="btn-primary" style="display: inline-block; margin-top: 20px;">
+                                <i class="fas fa-arrow-left"></i> Browse Categories
+                            </a>
+                        </div>
+                    `;
+                    
+                    const foodMenuContainer = document.querySelector('.food-menu .container .grid-2');
+                    if (foodMenuContainer) {
+                        foodMenuContainer.innerHTML = '';
+                        foodMenuContainer.appendChild(noResultsMsg);
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

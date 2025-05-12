@@ -461,55 +461,66 @@ function deg2rad(deg) {
 
 function openMap() {
     document.querySelector('.map-popup').style.display = 'block';
-    if(!map) {
-        initMap();
-    } else {
-        map.invalidateSize();
-        // Check scheduled delivery in case status has changed
-        checkScheduledDelivery();
-        updateDeliveryStatus();
-    }
-    
-    // Make sure the map is properly sized based on the eta info height
-    const etaInfo = document.getElementById('eta-info');
-    if (etaInfo) {
-        // Wait a moment for the eta-info to render completely
-        setTimeout(() => {
-            const etaHeight = etaInfo.offsetHeight;
-            document.getElementById('map').style.height = `calc(100% - ${etaHeight}px)`;
-            map.invalidateSize();
-        }, 100);
-    }
+    initMap();
 }
 
 function closeMap() {
     document.querySelector('.map-popup').style.display = 'none';
 }
 
-// Make the map popup and button persist across pages
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if there's already a map popup element
-    if (!document.querySelector('.map-popup')) {
-        // Add the map popup HTML to the page if it doesn't exist
-        const mapPopup = document.createElement('div');
-        mapPopup.className = 'map-popup';
-        mapPopup.innerHTML = `
-            <button class="close-btn" onclick="closeMap()">×</button>
-            <div id="map"></div>
-            <div id="eta-info">Estimated delivery time: <span id="eta-time">${estimatedTime}</span></div>
+// Add map notification system
+function showMapNotification() {
+    // Check if notification exists already
+    let notification = document.querySelector('.map-notification');
+    
+    // If notification doesn't exist, create it
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.className = 'map-notification';
+        notification.innerHTML = `
+            <button class="map-notification-close" onclick="closeMapNotification()">&times;</button>
+            <div class="map-notification-title"><i class="fas fa-map-marker-alt"></i> Track Your Order</div>
+            <div class="map-notification-message">Watch your food delivery in real-time! Click the live map button to see where your order is.</div>
         `;
-        document.body.appendChild(mapPopup);
+        document.body.appendChild(notification);
         
-        // Add the button to open the map
-        const openMapBtn = document.createElement('button');
-        openMapBtn.className = 'open-map-btn';
-        openMapBtn.innerHTML = 'Live Map 🚗';
-        openMapBtn.onclick = openMap;
-        document.body.appendChild(openMapBtn);
+        // Close notification after 10 seconds
+        setTimeout(() => {
+            closeMapNotification();
+        }, 10000);
     }
     
-    // After adding any needed HTML, check for scheduled delivery
-    checkScheduledDelivery();
+    // Show with animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+}
+
+function closeMapNotification() {
+    const notification = document.querySelector('.map-notification');
+    if (notification) {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }
+}
+
+// Show notification on page load if cart has items
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if there are items in the cart
+    const savedCart = localStorage.getItem('foodCart') || localStorage.getItem('cart');
+    if (savedCart) {
+        try {
+            const parsedCart = JSON.parse(savedCart);
+            if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+                // Wait 3 seconds after page load before showing notification
+                setTimeout(showMapNotification, 3000);
+            }
+        } catch (e) {
+            console.error("Error parsing cart data:", e);
+        }
+    }
 });
 
 document.addEventListener('click', function(event) {

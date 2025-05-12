@@ -4,52 +4,50 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Food Delivery Website</title>
+    <title>Food School - Online Food Delivery</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.css">
-    <!-- Hover CSS -->
-    <link rel="stylesheet" href="css/hover-min.css">
+    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/x-icon">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
-    <!--Map-->
+    <!-- Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="live-map.css">
-    <!-- Custom JS-->>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="custom.js"></script>
-<script src="cart.js"></script>
-
+    <!-- Custom JS -->
+    <script src="custom.js"></script>
+    <script src="cart.js"></script>
 </head>
 <body>
     <!-- Navigation Section Start -->
     <header class="navbar">
         <nav id="site-top-nav" class="navbar-menu navbar-fixed-top">
             <div class="container">
-                <!-- logo -->
+                <!-- Logo -->
                 <div class="logo">
                     <a href="index.html" title="Logo">
                         <img src="../assets/img/logo.png" alt="Logo" class="logo">
                     </a>
                 </div>
                 <!-- Main Menu -->
-                <div class="menu text-right">
+                <div class="menu">
                     <ul>
-                        <li><a class="hvr-underline-from-center" href="index.html">Home</a></li>
-                        <li><a class="hvr-underline-from-center" href="categories.html">Categories</a></li>
-                        <li><a class="hvr-underline-from-center" href="foods.html">Foods</a></li>
-                        <li><a class="hvr-underline-from-center" href="order.html">Order</a></li>
-                        <li><a class="hvr-underline-from-center" href="contact.html">Contact</a></li>
-                        <li><a class="hvr-underline-from-center" href="login.html">Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> My Account</a></li>
-                        
-                        <li class="cart">
-                            <a href="order.html" class="cart-icon">
-                              <i class="fas fa-shopping-cart"></i>
-                              <span id="cart-count">0</span>
+                        <li><a class="active" href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
+                        <li><a href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li class="cart-container">
+                            <a href="#" class="cart-link" id="cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count">0</span>
                             </a>
-                        </li>
                             <div id="cart-content" class="cart-content">
                                 <h3 class="text-center">Shopping Cart</h3>
                                 <table class="cart-table" border="0">
@@ -67,7 +65,7 @@
                                         <td>$ 8.00</td>
                                         <td>1</td>
                                         <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
+                                        <td><a href="#" class="btn-delete"><i class="fas fa-times"></i></a></td>
                                     </tr>
                                     <tr>
                                         <td><img src="../assets/img/s1.jpg" alt="Food"></td>
@@ -75,23 +73,15 @@
                                         <td>$ 8.00</td>
                                         <td>1</td>
                                         <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="../assets/img/b1.jpg" alt="Food"></td>
-                                        <td>Burder</td>
-                                        <td>$ 8.00</td>
-                                        <td>1</td>
-                                        <td>$ 8.00</td>
-                                        <td><a href="#" class="btn-delete">&times;</a></td>
+                                        <td><a href="#" class="btn-delete"><i class="fas fa-times"></i></a></td>
                                     </tr>
                                     <tr>
                                         <th colspan="4">Total</th>
-                                        <th>$24.00$</th>
+                                        <th>$16.00</th>
                                         <th></th>
                                     </tr>
                                 </table>
-                                <a href="order.html" class="btn-primary">Confirm Order</a>
+                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
                             </div>
                         </li>
                     </ul>
@@ -102,213 +92,232 @@
     <!-- Navigation Section End -->
 
     <!-- Food Search Section Start -->
-    <section class="food-search text-center" >
+    <section class="food-search text-center">
         <div class="container">
+            <h1 class="text-white">Find Your Favorite Food</h1>
             <form onsubmit="return searchFood(event)">
                 <input type="search" id="searchInput" placeholder="Search for food..." required>
                 <input type="submit" value="Search" class="btn-search">
-              </form>
-              
+            </form>
         </div>
     </section>
     <!-- Food Search Section End -->
 
     <!-- Category Section Start -->
     <section class="text-center py-10">
-        <h2 class="text-3xl font-bold">Explore Foods</h2>
-        <div class="scroll-container">
-            <div class="scroll-item">
-                <img src="../assets/img/pizza.jpg" alt="Pizza">
-                <h3>Pizza</h3>
-
+        <div class="container">
+            <h2>Explore Food Categories</h2>
+            <div class="heading-border"></div>
+            <div class="scroll-container">
+                <div class="scroll-item">
+                    <img src="../assets/img/pizza.jpg" alt="Pizza">
+                    <h3>Pizza</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/sandwich.jpg" alt="Sandwich">
+                    <h3>Sandwich</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/burger.jpg" alt="Burger">
+                    <h3>Burger</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/pasta.jpg" alt="Pasta">
+                    <h3>Pasta</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/sushi.jpg" alt="Sushi">
+                    <h3>Sushi</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/salad.jpg" alt="Salad">
+                    <h3>Salad</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/steak.jpg" alt="Steak">
+                    <h3>Steak</h3>
+                </div>
+                <div class="scroll-item">
+                    <img src="../assets/img/dessert.jpg" alt="Dessert">
+                    <h3>Dessert</h3>
+                </div>
             </div>
-            <div class="scroll-item">
-                <img src="../assets/img/sandwich.jpg" alt="Sandwich">
-                <h3>Sandwich</h3>
-            </div>
-            <div class="scroll-item">
-                <img src="../assets/img/burger.jpg" alt="Burger">
-                <h3>Burger</h3>
-            </div>
-        <div class="scroll-item">
-            <a href="pasta-menu.html">
-                <img src="../assets/img/pasta.jpg" alt="Pasta">
-                <h3>Pasta</h3>
-            </a>
         </div>
-        <div class="scroll-item">
-            <a href="sushi-menu.html">
-                <img src="../assets/img/sushi.jpg" alt="Sushi">
-                <h3>Sushi</h3>
-            </a>
-        </div>
-        <div class="scroll-item">
-            <a href="salad-menu.html">
-                <img src="../assets/img/salad.jpg" alt="Salad">
-                <h3>Salad</h3>
-            </a>
-        </div>
-        <div class="scroll-item">
-            <a href="steak-menu.html">
-                <img src="../assets/img/steak.jpg" alt="Steak">
-                <h3>Steak</h3>
-            </a>
-        </div>
-        <div class="scroll-item">
-            <a href="dessert-menu.html">
-                <img src="../assets/img/dessert.jpg" alt="Dessert">
-                <h3>Dessert</h3>
-            </a>
-        </div>
-    </div>
-        
-    </div>
     </section>
     <!-- Category Section End -->
 
     <!-- Foods Section Start -->
     <section class="food-menu">
         <div class="container">
-            <h2 class="text-center">Food Menu</h2>
+            <h2 class="text-center">Popular Menu</h2>
             <div class="heading-border"></div>
             <div class="grid-2">
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/p1.jpg" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/p1.jpg" alt="Pizza">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Pizza</h4>
+                        <p class="food-price">$9.99</p>
+                        <p class="food-details">Crispy crust, melty cheese, and toppings you'll crave again and again.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Pizza", price: 9.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Pizza</h4>
-                            <p class="food-price">$9.99</p>
-                            <p class="food-details">Crispy crust, melty cheese, and toppings you'll crave again and again.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Pizza", price: 9.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s1.jpg" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s1.jpg" alt="Sandwich">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Sandwich</h4>
+                        <p class="food-price">$5.49</p>
+                        <p class="food-details">Stacked with flavor, layered with fresh fillings for a quick bite.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Sandwich", price: 5.49 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Sandwich</h4>
-                            <p class="food-price">$5.49</p>
-                            <p class="food-details">Stacked with flavor, layered with fresh fillings for a quick bite.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Sandwich", price: 5.49 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/b1.jpg" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/b1.jpg" alt="Burger">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Burger</h4>
+                        <p class="food-price">$6.99</p>
+                        <p class="food-details">Juicy patties, melted cheese, and soft buns—comfort food at its best.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Burger", price: 6.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Burger</h4>
-                            <p class="food-price">$6.99</p>
-                            <p class="food-details">Juicy patties, melted cheese, and soft buns—comfort food at its best.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Burger", price: 6.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/p2.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/p2.png" alt="Pasta">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Pasta</h4>
+                        <p class="food-price">$8.99</p>
+                        <p class="food-details">Classic Italian delight, served with rich sauces and fresh ingredients.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Pasta", price: 8.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Pasta</h4>
-                            <p class="food-price">$8.99</p>
-                            <p class="food-details">Classic Italian delight, served with rich sauces and fresh ingredients.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Pasta", price: 8.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s2.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s2.png" alt="Sushi">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Sushi</h4>
+                        <p class="food-price">$12.99</p>
+                        <p class="food-details">Delicate, fresh, and full of flavor—crafted with care and tradition.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Sushi", price: 12.99 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Sushi</h4>
-                            <p class="food-price">$12.99</p>
-                            <p class="food-details">Delicate, fresh, and full of flavor—crafted with care and tradition.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Sushi", price: 12.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="food-menu-box">
-                    <form action="">
-                        <div class="food-menu-img">
-                            <img src="../assets/img/s3.png" alt="" class="icon">
+                    <div class="food-menu-img">
+                        <img src="../assets/img/s3.png" alt="Salad">
+                    </div>
+                    <div class="food-menu-desc">
+                        <h4>Salad</h4>
+                        <p class="food-price">$7.49</p>
+                        <p class="food-details">Fresh, crisp, and colorful—a healthy option packed with nutrients.</p>
+                        <div class="quantity-wrapper">
+                            <input type="number" value="1" min="1" class="quantity">
+                            <button class="btn-primary" onclick='addToCart({ name: "Salad", price: 7.49 }, this.previousElementSibling.value)'>
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>
                         </div>
-                        <div class="food-menu-desc">
-                            <h4>Steak</h4>
-                            <p class="food-price">$15.99</p>
-                            <p class="food-details">Grilled to perfection, tender and juicy—made for true meat lovers.</p>
-                            <input type="number" value="1" min="1">
-                            <button class="btn-primary" onclick='addToCart({ name: "Steak", price: 15.99 }, this.previousElementSibling.value)'>Add to Cart</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <p class="text-center">
-            <a href="foods.html" class="btn-primary">See All Foods</a>
-        </p>
     </section>
     <!-- Foods Section End -->
 
     <!-- Footer Section Start -->
-    <section class="footer">
+    <footer class="footer">
         <div class="container">
             <div class="grid-3">
-                <div class="text-center">
-                    <h3>About Us</h3><br>
-                    <p>Fresh, fast, and at your doorstep! 🚀 Our food delivery app connects you with your favorite restaurants, bringing delicious meals right to you—hot, fresh, and hassle-free. Order now and taste the convenience! 🍽️🔥</p>
-                </div>
-                <div class="texr-center">
-                    <h3>Site Map</h3><br>
-                    <div class="site-links">
-                        <a href="categories.html">Categories</a>
-                        <a href="foods.html">Foods</a>
-                        <a href="order.html">Order</a>
-                        <a href="contact.html">Contact</a>
-                        <a href="login.html">Login</a>
-                    </div>
-                </div>
-                <div class="social-links">
-                    <h3>Social Links</h3><br>
+                <div class="footer-info">
+                    <h3>Food School</h3>
+                    <p>Delicious food delivery service bringing your favorite meals right to your door.</p>
                     <div class="social">
                         <ul>
-                            <li><a href="https://youtube.com/@codearcade-se4rc?si=2vBakC9_9-q3AL0y"><img src="https://img.icons8.com/color/48/null/facebook-new.png"/></a></li>
-                            <li><a href="https://youtube.com/@codearcade-se4rc?si=2vBakC9_9-q3AL0y"><img src="https://img.icons8.com/fluency/48/null/instagram-new.png"/></a></li>
-                            <li><a href="https://youtube.com/@codearcade-se4rc?si=2vBakC9_9-q3AL0y"><img src="https://img.icons8.com/color/48/null/twitter--v1.png"/></a></li>
-                            <li><a href="https://youtube.com/@codearcade-se4rc?si=2vBakC9_9-q3AL0y"><img src="https://img.icons8.com/color/48/null/linkedin-circled--v1.png"/></a></li>
-                            <li><a href="https://youtube.com/@codearcade-se4rc?si=2vBakC9_9-q3AL0y"><img src="https://img.icons8.com/color/48/null/youtube-play.png"/></a></li>
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
                         </ul>
                     </div>
                 </div>
+                <div class="site-links">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="categories.html">Categories</a>
+                    <a href="foods.html">Foods</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="contact-info">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Food Street, City, Country</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <p><i class="fas fa-envelope"></i> info@foodschool.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Food School. All Rights Reserved.</p>
             </div>
         </div>
-    </section>
+    </footer>
     <!-- Footer Section End -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="live-map.js"></script>
-    
-    <!-- Map popup -->
-    <div class="map-popup">
-        <button class="close-btn" onclick="closeMap()">×</button>
-        <div id="map"></div>
-        <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
-    </div>
 
-    <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
+    <!-- Back To Top Button -->
+    <a href="#" id="back-to-top"><i class="fas fa-arrow-up"></i></a>
+
+    <!-- Custom JS -->
+    <script>
+        // Toggle cart dropdown
+        document.getElementById('cart-icon').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('cart-content').classList.toggle('show');
+        });
+
+        // Back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('active');
+            } else {
+                backToTop.classList.remove('active');
+            }
+        });
+
+        document.getElementById('back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </body>
 </html>
