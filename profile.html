@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="live-map.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Add jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="custom.js"></script>
     <script src="cart.js"></script>
     <!-- Supabase JS -->
@@ -418,6 +420,7 @@
                 
                 if (authError) {
                     console.error('Authentication error details:', authError);
+                    // Redirect to login page if not authenticated
                     window.location.href = 'login.html';
                     return;
                 }
@@ -425,13 +428,16 @@
                 const user = data.user;
                 
                 if (!user) {
-                    // Redirect to login page if not logged in
+                    // Redirect to login page if no user
                     window.location.href = 'login.html';
                     return;
                 }
                 
                 console.log('User logged in:', user.id);
                 currentUser = user;
+                
+                // Call function to create profile if missing
+                await createProfileIfMissing(user.id);
                 
                 // Fetch user's profile data
                 const { data: profile, error: profileError } = await supabase
@@ -440,29 +446,35 @@
                     .eq('id', user.id)
                     .single();
                 
-                if (profileError) {
+                if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means "no rows found"
                     console.error('Error fetching profile details:', profileError);
-                    
-                    // Create profile if it doesn't exist
-                    await createUserProfile(user);
+                    // If there's an error other than no profile found, handle it
+                    // You might want to display an error message to the user
                     return;
                 }
                 
-                console.log('Profile loaded:', profile);
-                userProfile = profile;
+                if (profile) {
+                    console.log('Profile loaded:', profile);
+                    userProfile = profile;
+                    // Populate the profile form
+                    populateProfileForm();
+                } else {
+                     console.log('No profile found for user:', user.id);
+                     // Handle case where user is logged in but has no profile (should be rare with the new logic)
+                     // You might want to display a message or a form to create their profile manually
+                }
                 
-                // Populate the profile form
-                populateProfileForm();
-                
-                // Load order history
-                if (document.querySelector('.profile-tab.active').dataset.tab === 'orders') {
+                // Load order history if the orders tab is active on page load
+                // You might need to adjust this based on your default active tab
+                const activeTab = document.querySelector('.profile-tab.active');
+                if (activeTab && activeTab.dataset.tab === 'orders') {
                     loadOrderHistory();
                 }
                 
             } catch (error) {
-                console.error('Auth check error details:', error);
-                // Redirect to login page if there's an error
-                window.location.href = 'login.html';
+                console.error('Auth check and profile load error:', error);
+                 // Redirect to login page if there's an unexpected error during auth check
+                 window.location.href = 'login.html';
             }
         }
         
@@ -504,25 +516,29 @@
             
             // We can't set full_name since it doesn't exist in the database
             // Just setting email based on the user's auth data
-            document.getElementById('full-name').value = '';  // Can't populate this
+            document.getElementById('full-name').value = userProfile.full_name || ''; // Populate full_name
             document.getElementById('email').value = currentUser.email || '';
             document.getElementById('phone').value = userProfile.phone || '';
             
             // Populate address field if available
             if (userProfile.address) {
-                // Try to parse parts from the single address field
-                const addressParts = userProfile.address.split(',').map(part => part.trim());
-                
-                if (addressParts.length >= 3) {
-                    document.getElementById('address-line-1').value = addressParts[0] || '';
-                    // If there are more than 3 parts, the second part might be address line 2
-                    document.getElementById('address-line-2').value = addressParts.length > 3 ? addressParts[1] : '';
-                    document.getElementById('city').value = addressParts[addressParts.length - 2] || '';
-                    document.getElementById('postal-code').value = addressParts[addressParts.length - 1] || '';
-                } else {
-                    // Just put the whole address in line 1 if we can't parse it
-                    document.getElementById('address-line-1').value = userProfile.address || '';
-                }
+                 document.getElementById('address-line-1').value = userProfile.address || ''; // Assuming address is a single field
+                 // Clear other address fields if they exist in the form but not in DB
+                 const addressLine2Input = document.getElementById('address-line-2');
+                 if(addressLine2Input) addressLine2Input.value = '';
+                 const cityInput = document.getElementById('city');
+                 if(cityInput) cityInput.value = '';
+                 const postalCodeInput = document.getElementById('postal-code');
+                 if(postalCodeInput) postalCodeInput.value = '';
+            } else {
+                 // Clear address fields if no address in DB
+                 document.getElementById('address-line-1').value = '';
+                 const addressLine2Input = document.getElementById('address-line-2');
+                 if(addressLine2Input) addressLine2Input.value = '';
+                 const cityInput = document.getElementById('city');
+                 if(cityInput) cityInput.value = '';
+                 const postalCodeInput = document.getElementById('postal-code');
+                 if(postalCodeInput) postalCodeInput.value = '';
             }
         }
         
@@ -533,12 +549,14 @@
             const errorMessage = document.getElementById('error-message');
             const successMessage = document.getElementById('success-message');
             
+            const fullName = document.getElementById('full-name').value; // Get full name from form
             const phone = document.getElementById('phone').value;
             
             try {
                 console.log('Updating profile for user:', currentUser.id);
                 
                 const updateData = {
+                    full_name: fullName, // Include full_name in update
                     phone: phone
                 };
                 
@@ -562,6 +580,7 @@
                     errorMessage.style.display = 'none';
                     
                     // Update the user profile data
+                    userProfile.full_name = fullName; // Update local profile data
                     userProfile.phone = phone;
                 }
             } catch (error) {
@@ -587,9 +606,11 @@
             try {
                 console.log('Updating address for user:', currentUser.id);
                 
+                // Assuming address is a single text column in the profiles table
+                const fullAddress = addressLine1 + (addressLine2 ? ", " + addressLine2 : "") + ", " + city + ", " + postalCode;
+
                 const addressData = {
-                    address: addressLine1 + (addressLine2 ? ", " + addressLine2 : "") + ", " + city + ", " + postalCode
-                    // Combine all address fields into one since profiles table only has a single address column
+                    address: fullAddress // Combine all address fields into one since profiles table only has a single address column
                 };
                 
                 console.log('Address update data:', addressData);
@@ -612,7 +633,7 @@
                     errorMessage.style.display = 'none';
                     
                     // Update the user profile data
-                    userProfile.address = addressLine1 + (addressLine2 ? ", " + addressLine2 : "") + ", " + city + ", " + postalCode;
+                    userProfile.address = fullAddress;
                 }
             } catch (error) {
                 console.error('Address update error details:', error);
@@ -710,18 +731,12 @@
         
         // Handle logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
-            try {
-                const { error } = await supabase.auth.signOut();
-                
-                if (error) {
-                    console.error('Logout error:', error);
-                    return;
-                }
-                
-                // Redirect to home page after logout
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Logout error:', error);
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Error signing out:', error);
+            } else {
+                // Redirect to login page after logout
+                window.location.href = 'login.html';
             }
         });
         
@@ -738,6 +753,72 @@
             checkAuthAndLoadProfile();
             updateCartCount();
         });
+
+        // --- NEW: Function to create profile if data exists in localStorage ---
+        async function createProfileIfMissing(userId) {
+            console.log('createProfileIfMissing called for user:', userId); // Log start of function
+            const pendingProfileData = localStorage.getItem('signup_pending_profile');
+            console.log('localStorage signup_pending_profile:', pendingProfileData); // Log localStorage content
+
+            if (pendingProfileData) {
+                try {
+                    const { name, phone, address, email } = JSON.parse(pendingProfileData);
+                    console.log('Parsed pending profile data:', { name, phone, address, email }); // Log parsed data
+
+                    // Check if a profile already exists for this user
+                     const { data: existingProfile, error: fetchError } = await supabase
+                         .from('profiles')
+                         .select('id')
+                         .eq('id', userId)
+                         .single();
+
+                     if (fetchError && fetchError.code !== 'PGRST116') {
+                         console.error('Error checking for existing profile:', fetchError);
+                         // Handle error, but don't stop the process
+                     }
+
+                    if (!existingProfile) {
+                         console.log('No existing profile found, attempting to create...'); // Log before insert attempt
+                         const profileData = {
+                             id: userId,
+                             full_name: name,
+                             phone: phone,
+                             address: address,
+                             email: email
+                         };
+                         console.log('Profile data to insert:', profileData); // Log data being inserted
+
+                         const { error: insertError } = await supabase
+                             .from('profiles')
+                             .insert([profileData]);
+
+                         if (insertError) {
+                             console.error('Error creating profile:', insertError); // Log insert error
+                             // You might want to display an error message to the user
+                         } else {
+                             console.log('Profile created successfully for user:', userId); // Log successful insert
+                             // Clear the pending data from localStorage after successful creation
+                             localStorage.removeItem('signup_pending_profile');
+                             console.log('Cleared signup_pending_profile from localStorage'); // Log localStorage clear
+                             // Optionally, display a success message to the user
+                         }
+                    } else {
+                        console.log('Profile already exists for user:', userId); // Log if profile exists
+                        // Profile already exists, clear pending data as it's no longer needed
+                        localStorage.removeItem('signup_pending_profile');
+                         console.log('Cleared signup_pending_profile from localStorage'); // Log localStorage clear
+                    }
+
+
+                } catch (error) {
+                    console.error('Error processing pending profile data:', error); // Log parsing or other errors
+                    // Handle JSON parsing error or other issues
+                }
+            } else {
+                 console.log('No pending profile data found in localStorage.'); // Log if no data in localStorage
+            }
+        }
+        // --- END NEW ---
     </script>
 </body>
 </html> 
