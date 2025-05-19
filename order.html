@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="style.css">
     <!-- Add Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -316,11 +317,8 @@
       </section>
     
       <script>
-        // Initialize Supabase client
-        const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
-        // Fix: Use the global supabase object from the imported library
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // Use the global supabase client
+        const supabase = window.supabaseClient;
         
         // Check both new and old storage formats
         let cart = [];

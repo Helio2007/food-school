@@ -22,6 +22,7 @@
     <script src="cart.js"></script>
     <!-- Add Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <style>
         .auth-container {
             max-width: 500px;
@@ -149,7 +150,7 @@
                         <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                         <li><a class="hvr-underline-from-center active" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li><a class="hvr-underline-from-center" href="profile.html" id="account-link"><i class="fas fa-user-circle"></i> Account</a></li>
                         <li class="cart-container">
                             <a href="order.html" class="cart-link" id="cart-icon">
                                 <i class="fas fa-shopping-cart"></i>
@@ -289,13 +290,9 @@
     
     <!-- Auth Script -->
     <script>
-        // Initialize Supabase client
-        const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
         // Tab switching
         function switchTab(tabName) {
+            console.log('Switching to tab:', tabName);
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -303,9 +300,15 @@
                 content.classList.remove('active');
             });
             
-            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById(`${tabName}-tab`).classList.add('active');
+            const targetTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            const targetContent = document.getElementById(`${tabName}-tab`);
+
+            console.log('Target Tab Element:', targetTab);
+            console.log('Target Content Element:', targetContent);
             
+            if (targetTab) targetTab.classList.add('active');
+            if (targetContent) targetContent.classList.add('active');
+
             // Clear error and success messages
             document.getElementById('error-message').style.display = 'none';
             document.getElementById('success-message').style.display = 'none';
@@ -328,7 +331,7 @@
             const successMessage = document.getElementById('success-message');
             
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await window.supabaseClient.auth.signInWithPassword({
                     email,
                     password
                 });
@@ -369,32 +372,56 @@
         // Sign up form submission
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
             const phone = document.getElementById('signup-phone').value;
             const password = document.getElementById('signup-password').value;
-            // Get address input value
-            const addressInput = document.querySelector('#signup-form input[placeholder="Enter your address..."]');
-            const address = addressInput ? addressInput.value : ''; // Handle case if address field is missing
             const errorMessage = document.getElementById('error-message');
             const successMessage = document.getElementById('success-message');
+            
+            // Validate form fields
+            if (!name || !email || !phone || !password) {
+                errorMessage.textContent = 'Please fill in all fields';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                return;
+            }
 
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.textContent = 'Please enter a valid email address';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                return;
+            }
+
+            // Validate password length
+            if (password.length < 6) {
+                errorMessage.textContent = 'Password must be at least 6 characters long';
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+                return;
+            }
+            
             try {
+                console.log('Attempting to sign up user with email:', email);
+                
                 // Sign up the user
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await window.supabaseClient.auth.signUp({
                     email,
                     password,
-                    // Optionally, store some metadata here, but avoid sensitive info
-                    // options: {
-                    //     data: {
-                    //         full_name: name, // Example, sensitive data like address or phone might not be suitable here
-                    //     }
-                    // }
+                    options: {
+                        data: {
+                            full_name: name,
+                            phone: phone
+                        }
+                    }
                 });
-
+                
                 console.log('Signup response:', data);
-
+                
                 if (error) {
                     console.error('Signup error:', error);
                     errorMessage.textContent = error.message;
@@ -402,46 +429,41 @@
                     successMessage.style.display = 'none';
                     return;
                 }
-
+                
                 if (!data.user || !data.user.id) {
                     console.error('Signup succeeded but no user ID returned');
                     errorMessage.textContent = 'Account created but user data is incomplete. Please try logging in.';
                     errorMessage.style.display = 'block';
                     successMessage.style.display = 'none';
-
-                     // Still show success and redirect to login
-                     setTimeout(() => {
-                         switchTab('login');
-                     }, 3000);
+                    
+                    // Still show success and redirect to login
+                    setTimeout(() => {
+                        switchTab('login');
+                    }, 3000);
                     return;
                 }
-
-                // Store user data temporarily after successful signup for later profile creation
-                // WARNING: Storing sensitive data in localStorage is not recommended for production
-                // Consider a more secure method like a serverless function or storing minimal non-sensitive data
+                
+                // Store user data temporarily after successful signup
                 localStorage.setItem('signup_pending_profile', JSON.stringify({
-                     userId: data.user.id, // Store the new user's ID
-                     name: name,
-                     phone: phone,
-                     address: address,
-                     email: email // Store email as well
-                 }));
-
-
+                    userId: data.user.id,
+                    name: name,
+                    phone: phone,
+                    email: email
+                }));
+                
                 // Sign up successful
-                successMessage.textContent = 'Account created successfully! Please log in with your new credentials.'; // Updated message
+                successMessage.textContent = 'Account created successfully! Please check your email for verification.';
                 successMessage.style.display = 'block';
                 errorMessage.style.display = 'none';
-
+                
                 // Clear the form
                 document.getElementById('signup-form').reset();
-
-                // Switch to login tab after 3 seconds to allow message to be read
+                
+                // Switch to login tab after 3 seconds
                 setTimeout(() => {
                     switchTab('login');
                 }, 3000);
-
-
+                
             } catch (error) {
                 console.error('Signup process error:', error);
                 errorMessage.textContent = 'An error occurred during signup. Please try again.';
@@ -452,7 +474,7 @@
         
         // Check if the user is already logged in
         async function checkAuthState() {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await window.supabaseClient.auth.getUser();
             
             if (user) {
                 // User is already logged in, redirect to home page
@@ -462,6 +484,26 @@
         
         // Check auth state on page load
         checkAuthState();
+
+        // Update the account link based on authentication state
+        async function updateAccountLink() {
+            const { data: { user } } = await window.supabaseClient.auth.getUser();
+            const accountLink = document.getElementById('account-link');
+
+            if (accountLink) {
+                if (user) {
+                    accountLink.href = 'profile.html'; // Link to profile if logged in
+                } else {
+                    accountLink.href = 'login.html'; // Link to login if not logged in
+                }
+            }
+        }
+
+        // Call the function on page load and after auth state changes
+        document.addEventListener('DOMContentLoaded', updateAccountLink);
+        window.supabaseClient.auth.onAuthStateChange((event, session) => {
+            updateAccountLink();
+        });
 
         // Update cart count from local storage
         function updateCartCount() {

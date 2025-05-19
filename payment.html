@@ -8,6 +8,7 @@
   <script src="cart.js" defer></script>
   <!-- Add Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -117,10 +118,8 @@
   </section>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script>
-    // Initialize Supabase client
-    const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    // Use the global supabase client
+    const supabase = window.supabaseClient;
     
     const urlParams = new URLSearchParams(window.location.search);
     const total = urlParams.get('total');

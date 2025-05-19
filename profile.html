@@ -22,6 +22,7 @@
     <script src="cart.js"></script>
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <style>
         .profile-container {
             max-width: 900px;
@@ -378,13 +379,6 @@
     
     <!-- Profile Script -->
     <script>
-        // Initialize Supabase client
-        const supabaseUrl = 'https://apexmqhfzzsykjwanjfx.supabase.co'; 
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwZXhtcWhmenpzeWtqd2FuamZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzUwNzEsImV4cCI6MjA2MjA1MTA3MX0.C5FIERevPeBTEkFdsysc4jZJ7R7hGfmQbf7aiHoqO-c';
-        
-        // Fix: Correctly initialize Supabase client
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
         let currentUser = null;
         let userProfile = null;
         
@@ -416,7 +410,7 @@
         // Check if user is logged in and fetch profile data
         async function checkAuthAndLoadProfile() {
             try {
-                const { data, error: authError } = await supabase.auth.getUser();
+                const { data, error: authError } = await window.supabaseClient.auth.getUser();
                 
                 if (authError) {
                     console.error('Authentication error details:', authError);
@@ -440,7 +434,7 @@
                 await createProfileIfMissing(user.id);
                 
                 // Fetch user's profile data
-                const { data: profile, error: profileError } = await supabase
+                const { data: profile, error: profileError } = await window.supabaseClient
                     .from('profiles')
                     .select('*')
                     .eq('id', user.id)
@@ -491,7 +485,7 @@
                 
                 console.log('Profile data to insert:', profileData);
                 
-                const { data, error } = await supabase
+                const { data, error } = await window.supabaseClient
                     .from('profiles')
                     .insert(profileData)
                     .select();
@@ -562,7 +556,7 @@
                 
                 console.log('Profile update data:', updateData);
                 
-                const { data, error } = await supabase
+                const { data, error } = await window.supabaseClient
                     .from('profiles')
                     .update(updateData)
                     .eq('id', currentUser.id)
@@ -615,7 +609,7 @@
                 
                 console.log('Address update data:', addressData);
                 
-                const { data, error } = await supabase
+                const { data, error } = await window.supabaseClient
                     .from('profiles')
                     .update(addressData)
                     .eq('id', currentUser.id)
@@ -650,7 +644,7 @@
             const ordersContainer = document.getElementById('orders-container');
             
             try {
-                const { data: orders, error } = await supabase
+                const { data: orders, error } = await window.supabaseClient
                     .from('orders')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -731,7 +725,7 @@
         
         // Handle logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
-            const { error } = await supabase.auth.signOut();
+            const { error } = await window.supabaseClient.auth.signOut();
             if (error) {
                 console.error('Error signing out:', error);
             } else {
@@ -766,7 +760,7 @@
                     console.log('Parsed pending profile data:', { name, phone, address, email }); // Log parsed data
 
                     // Check if a profile already exists for this user
-                     const { data: existingProfile, error: fetchError } = await supabase
+                     const { data: existingProfile, error: fetchError } = await window.supabaseClient
                          .from('profiles')
                          .select('id')
                          .eq('id', userId)
@@ -788,7 +782,7 @@
                          };
                          console.log('Profile data to insert:', profileData); // Log data being inserted
 
-                         const { error: insertError } = await supabase
+                         const { error: insertError } = await window.supabaseClient
                              .from('profiles')
                              .insert([profileData]);
 
