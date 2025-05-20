@@ -16,14 +16,18 @@
     <link rel="stylesheet" href="live-map.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Add jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="cart.js"></script>
+    <script src="custom.js"></script>
     <!-- Add Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script src="cart.js" defer></script>
-    <script src="custom.js"></script>
     <style>
         header {
           display: flex;
@@ -317,16 +321,13 @@
       </section>
     
       <script>
-        // Use the global supabase client
-        const supabase = window.supabaseClient;
-        
         // Check both new and old storage formats
-        let cart = [];
         const savedCart = localStorage.getItem("foodCart") || localStorage.getItem("cart");
+        console.log("Raw data from localStorage:", savedCart);
         if (savedCart) {
           try {
             cart = JSON.parse(savedCart);
-            console.log("Loaded cart from storage:", cart);
+            console.log("Loaded cart from storage (parsed):", cart);
           } catch (error) {
             console.error("Error parsing cart data:", error);
             cart = [];
@@ -396,7 +397,7 @@
             console.log('Starting order confirmation process...');
             
             // First, check if all tables are accessible
-            const { error: tableCheckError } = await supabase
+            const { error: tableCheckError } = await window.supabaseClient
               .from('orders')
               .select('count')
               .limit(1);
@@ -408,7 +409,7 @@
             }
             
             // Check if user is logged in
-            const { data, error: authError } = await supabase.auth.getUser();
+            const { data, error: authError } = await window.supabaseClient.auth.getUser();
             
             if (authError) {
               console.error('Authentication error details:', authError);
@@ -476,7 +477,7 @@
             
             let orderResult;
             
-            const { data: order, error: orderError } = await supabase
+            const { data: order, error: orderError } = await window.supabaseClient
               .from('orders')
               .insert(orderData)
               .select();
@@ -491,7 +492,7 @@
                 total_amount: parseFloat(total.toFixed(2))
               };
               
-              const { data: simpleOrder, error: simpleOrderError } = await supabase
+              const { data: simpleOrder, error: simpleOrderError } = await window.supabaseClient
                 .from('orders')
                 .insert(minimalOrderData)
                 .select();
@@ -524,7 +525,7 @@
               
               console.log('Updating order with details:', orderUpdateData);
               
-              const { error: updateError } = await supabase
+              const { error: updateError } = await window.supabaseClient
                 .from('orders')
                 .update(orderUpdateData)
                 .eq('id', orderResult[0].id);
@@ -555,7 +556,7 @@
                 
                 console.log('Creating minimal order item:', itemData);
                 
-                const { error: itemError } = await supabase
+                const { error: itemError } = await window.supabaseClient
                   .from('order_items')
                   .insert(itemData);
                   
@@ -571,7 +572,7 @@
                   
                   console.log('Trying with even more minimal data:', minimalItemData);
                   
-                  const { error: minimalItemError } = await supabase
+                  const { error: minimalItemError } = await window.supabaseClient
                     .from('order_items')
                     .insert(minimalItemData);
                     
@@ -714,7 +715,7 @@
         // Check authentication status on page load
         async function checkAuth() {
           try {
-            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            const { data: { user }, error: authError } = await window.supabaseClient.auth.getUser();
             
             if (authError) {
               console.error('Authentication error:', authError);
@@ -726,7 +727,7 @@
             // Pre-fill user information if available
             if (user) {
               try {
-                const { data: profile, error: profileError } = await supabase
+                const { data: profile, error: profileError } = await window.supabaseClient
                   .from('profiles')
                   .select('*')
                   .eq('id', user.id)

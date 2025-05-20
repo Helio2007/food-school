@@ -118,9 +118,6 @@
   </section>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script>
-    // Use the global supabase client
-    const supabase = window.supabaseClient;
-    
     const urlParams = new URLSearchParams(window.location.search);
     const total = urlParams.get('total');
     const orderId = urlParams.get('order_id');
@@ -130,17 +127,51 @@
       e.preventDefault();
       
       try {
-        // Get current user
-        const { data: { user } } = await supabase.auth.getUser();
+        // Get current user (optional for payment, but good for RLS context)
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
         
-        if (user && orderId) {
-          // Update order status to 'Processing' in the database
-          const { error } = await supabase
+        if (!orderId || total === null) {
+            console.error('Missing orderId or total amount');
+            alert('Payment error: Missing order details.');
+            return;
+        }
+
+        console.log(`Processing payment for Order ID: ${orderId}, Amount: ${total}`);
+
+        // 1. Insert payment record into the payments table
+        const paymentData = {
+            order_id: orderId,
+            amount: parseFloat(total), // Ensure amount is a number
+            payment_method: 'Card', // Assuming card payment for this form
+            status: 'Completed' // Set status to Completed on successful simulated payment
+        };
+
+        console.log('Inserting payment data:', paymentData);
+
+        const { data: payment, error: paymentError } = await window.supabaseClient
+            .from('payments')
+            .insert([paymentData])
+            .select();
+
+        if (paymentError) {
+            console.error('Error inserting payment record:', paymentError);
+            alert(`Payment failed: ${paymentError.message}`);
+            // Depending on your needs, you might want to revert the order status or handle this error differently
+            return;
+        }
+
+        console.log('Payment record created successfully:', payment);
+
+        // 2. Update order status in the orders table
+        const { error: orderUpdateError } = await window.supabaseClient
             .from('orders')
             .update({ status: 'Processing', payment_completed: true })
             .eq('id', orderId);
             
-          if (error) throw error;
+        if (orderUpdateError) {
+            console.error('Error updating order status:', orderUpdateError);
+            // Handle this error - the payment is recorded, but the order status didn't update.
+            // You might want to log this or have a background process to reconcile.
         }
         
         alert("Payment successful! Thank you for your order.");
@@ -148,8 +179,9 @@
         updateCartCount();
         window.location.href = "index.html";
       } catch (error) {
-        console.error('Payment error:', error);
-        alert("Payment successful! Thank you for your order.");
+        console.error('Payment submission error:', error);
+        alert('An error occurred during payment processing.');
+        // Even on unexpected errors, clear the cart and redirect as the payment is simulated
         localStorage.removeItem("cart");
         updateCartCount();
         window.location.href = "index.html";
@@ -165,7 +197,7 @@
 
     // Check if user is logged in
     async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await window.supabaseClient.auth.getUser();
       
       if (!user && orderId) {
         // If not logged in but has order ID, still allow payment
