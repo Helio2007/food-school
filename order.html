@@ -190,6 +190,75 @@
           }
         }
       </style>
+      <!-- Add modal styles -->
+      <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #ff3b3b;
+        }
+
+        .order-details-container {
+            margin-top: 20px;
+        }
+
+        .order-details-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .order-items-table th,
+        .order-items-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+      </style>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -209,6 +278,7 @@
                         <li><a class="hvr-underline-from-center" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
                         <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
                         <li><a class="hvr-underline-from-center active" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="nutrition-scanner.html"><i class="fas fa-camera"></i> Scan Food</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                         <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                         <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
@@ -314,6 +384,18 @@
                 </div>
               </div>
             </div>
+
+            <!-- Delivery Area Selection -->
+            <div class="delivery-area" style="margin-top:20px;">
+              <h3>Delivery Area</h3>
+              <label style="margin-right:20px;">
+                <input type="radio" name="delivery-area" value="inside" checked onchange="updateDeliveryFee()"> Inside Tirana (1€)
+              </label>
+              <label>
+                <input type="radio" name="delivery-area" value="outside" onchange="updateDeliveryFee()"> Outside Tirana (3€)
+              </label>
+            </div>
+            <div style="margin-top:10px; font-weight:bold;">Delivery Fee: <span id="delivery-fee">€1</span></div>
           </div>
           
           <button type="submit">Confirm Order</button>
@@ -338,6 +420,7 @@
         let deliveryOption = "asap";
         let scheduledTime = null;
         let currentUser = null;
+        let deliveryFee = 1; // Default to inside Tirana
     
         const tableBody = document.getElementById("cart-table");
     
@@ -351,11 +434,11 @@
         } else {
           cart.forEach((item, index) => {
             const imgPath = item.image || `assets/img/${item.name.toLowerCase()}.jpg`;
-            console.log("Image path:", imgPath);
+            console.log('Image path:', imgPath);
             
             // Handle both old (qty) and new (quantity) formats
             const quantity = item.qty || item.quantity || 1;
-            const itemTotal = item.total || (item.price * quantity);
+            const itemTotal = parseFloat((item.price * quantity).toFixed(2));
             
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -372,7 +455,8 @@
           });
         }
     
-        document.getElementById("total-amount").textContent = `$${total.toFixed(2)}`;
+        // Update total with delivery fee
+        updateTotalWithDeliveryFee();
     
         function removeItem(index) {
           cart.splice(index, 1);
@@ -468,12 +552,14 @@
             // Create simplified order with minimal fields
             const orderData = {
               user_id: user.id,
-              total_amount: parseFloat(total.toFixed(2)),
+              total_amount: parseFloat((total + deliveryFee).toFixed(2)),
               status: 'Pending',
-              delivery_address: address
+              delivery_address: address,
+              cart_data: JSON.stringify(cart),
+              delivery_fee: deliveryFee
             };
             
-            console.log('Inserting simplified order data:', orderData);
+            console.log('Inserting order data with cart:', orderData);
             
             let orderResult;
             
@@ -489,7 +575,9 @@
               // Try with just the essential fields if the first attempt failed
               const minimalOrderData = {
                 user_id: user.id,
-                total_amount: parseFloat(total.toFixed(2))
+                total_amount: parseFloat((total + deliveryFee).toFixed(2)),
+                cart_data: JSON.stringify(cart),
+                delivery_fee: deliveryFee
               };
               
               const { data: simpleOrder, error: simpleOrderError } = await window.supabaseClient
@@ -601,7 +689,7 @@
             alert('Order submitted successfully! Redirecting to payment...');
             
             // Continue to payment page
-            window.location.href = `payment.html?total=${total.toFixed(2)}&order_id=${orderResult[0].id}`;
+            window.location.href = `payment.html?total=${(total + deliveryFee).toFixed(2)}&order_id=${orderResult[0].id}`;
             
           } catch (error) {
             console.error('Order submission error:', error);
@@ -765,6 +853,20 @@
         
         // Check authentication
         checkAuth();
+
+        // Update total with delivery fee
+        function updateTotalWithDeliveryFee() {
+          const totalWithFee = total + deliveryFee;
+          document.getElementById("total-amount").textContent = `$${totalWithFee.toFixed(2)}`;
+          document.getElementById("delivery-fee").textContent = `€${deliveryFee}`;
+        }
+
+        // Update delivery fee when area changes
+        window.updateDeliveryFee = function() {
+          const area = document.querySelector('input[name="delivery-area"]:checked').value;
+          deliveryFee = area === 'inside' ? 1 : 3;
+          updateTotalWithDeliveryFee();
+        }
       </script>
     <!-- Food Order Section End -->
 
@@ -813,5 +915,127 @@
     </div>
 
     <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
-  </body>
+
+    <!-- Add modal HTML -->
+    <div id="orderDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeOrderDetails()">&times;</span>
+            <h2>Order Details</h2>
+            <div id="orderDetailsContent"></div>
+        </div>
+    </div>
+
+    <script>
+    // Function to view order details
+    async function viewOrderDetails(orderId) {
+        try {
+            console.log('Viewing order details for:', orderId);
+            
+            // Fetch order details
+            const { data: order, error: orderError } = await window.supabaseClient
+                .from('orders')
+                .select('*')
+                .eq('id', orderId)
+                .single();
+
+            if (orderError) {
+                console.error('Error fetching order:', orderError);
+                throw orderError;
+            }
+
+            // Fetch order items
+            const { data: orderItems, error: itemsError } = await window.supabaseClient
+                .from('order_items')
+                .select('*')
+                .eq('order_id', orderId);
+
+            if (itemsError) {
+                console.error('Error fetching order items:', itemsError);
+                throw itemsError;
+            }
+
+            console.log('Order:', order);
+            console.log('Order items:', orderItems);
+
+            // Format date
+            const orderDate = new Date(order.created_at).toLocaleString();
+
+            // Create order details HTML
+            const orderDetailsContent = document.getElementById('orderDetailsContent');
+            orderDetailsContent.innerHTML = `
+                <div class="order-details-container">
+                    <div class="order-details-header">
+                        <div>
+                            <h3>Order #${order.id}</h3>
+                            <p>Date: ${orderDate}</p>
+                        </div>
+                        <div>
+                            <p>Status: <span class="status-pill status-${order.status.toLowerCase()}">${order.status}</span></p>
+                        </div>
+                    </div>
+
+                    <div class="delivery-info">
+                        <h4>Delivery Information</h4>
+                        <p>Name: ${order.customer_name || 'N/A'}</p>
+                        <p>Address: ${order.delivery_address || 'N/A'}</p>
+                        <p>Phone: ${order.customer_phone || 'N/A'}</p>
+                        <p>Email: ${order.customer_email || 'N/A'}</p>
+                        ${order.scheduled_time ? `<p>Scheduled Delivery: ${order.scheduled_time}</p>` : ''}
+                    </div>
+
+                    <h4>Order Items</h4>
+                    <table class="order-items-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${orderItems.map(item => `
+                                <tr>
+                                    <td>${item.product_name}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>$${(item.price || 0).toFixed(2)}</td>
+                                    <td>$${((item.price || 0) * item.quantity).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="order-summary">
+                        <div></div>
+                        <div>
+                            <h4>Total: $${order.total_amount.toFixed(2)}</h4>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Show modal
+            const modal = document.getElementById('orderDetailsModal');
+            modal.style.display = 'block';
+        } catch (error) {
+            console.error('Error fetching order details:', error);
+            alert('Error loading order details. Please try again.');
+        }
+    }
+
+    // Function to close order details modal
+    function closeOrderDetails() {
+        const modal = document.getElementById('orderDetailsModal');
+        modal.style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('orderDetailsModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+    </script>
+</body>
 </html>

@@ -23,6 +23,7 @@
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
+    <script src="driver.js"></script>
     <style>
         .profile-container {
             max-width: 900px;
@@ -206,6 +207,238 @@
             margin-bottom: 15px;
             color: #ddd;
         }
+        
+        .referral-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .referral-code {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff3b3b;
+            letter-spacing: 2px;
+            padding: 10px;
+            background: #fff;
+            border: 2px dashed #ff3b3b;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .available-orders {
+            margin-top: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-accept {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-accept:hover {
+            background: #218838;
+        }
+
+        .active-delivery {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .completion-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .upload-photo {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .upload-photo:hover {
+            border-color: #ff3b3b;
+        }
+
+        .driver-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff3b3b;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .driver-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn-status {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-status:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger {
+            padding: 10px 20px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #b72121;
+        }
+
+        .status-icon {
+            margin-right: 10px;
+        }
+
+        .status-text {
+            font-weight: bold;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #ff3b3b;
+        }
+
+        .order-info {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .order-info p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .order-items {
+            margin-top: 20px;
+        }
+
+        .order-items h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .delivery-photo {
+            margin-top: 30px;
+        }
+
+        .delivery-photo img {
+            border: 1px solid #ddd;
+            padding: 5px;
+            background: white;
+        }
     </style>
 </head>
 <body>
@@ -226,6 +459,7 @@
                         <li><a class="hvr-underline-from-center" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
                         <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
                         <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="nutrition-scanner.html"><i class="fas fa-camera"></i> Scan Food</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                         <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                         <li><a class="hvr-underline-from-center active" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
@@ -270,6 +504,7 @@
             <div class="profile-tab active" data-tab="profile">My Profile</div>
             <div class="profile-tab" data-tab="orders">Order History</div>
             <div class="profile-tab" data-tab="address">Addresses</div>
+            <div class="profile-tab" data-tab="work">Work Now</div>
         </div>
         
         <div id="profile-tab-content" class="profile-content active">
@@ -328,6 +563,63 @@
                 </div>
             </form>
         </div>
+        
+        <div id="work-tab-content" class="profile-content">
+            <div class="referral-section">
+                <h3>Your Referral Code</h3>
+                <p>Use this code to activate your driver account:</p>
+                <div class="referral-code" id="referral-code">Loading...</div>
+                <button class="btn-primary" id="activate-driver" style="display: none;">Activate Driver Account</button>
+            </div>
+
+            <div id="driver-content" style="display: none;">
+                <div class="driver-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-deliveries">0</div>
+                        <div class="stat-label">Total Deliveries</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="driver-rating">5.0</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="online-status">Offline</div>
+                        <div class="stat-label">Status</div>
+                    </div>
+                </div>
+
+                <div class="driver-controls">
+                    <button id="toggle-status" class="btn-status">
+                        <span class="status-icon"></span>
+                        <span class="status-text">Go Online</span>
+                    </button>
+                    <button id="stop-driving" class="btn-danger">Stop Being a Driver</button>
+                </div>
+
+                <div id="active-delivery" class="active-delivery" style="display: none;">
+                    <h3>Active Delivery</h3>
+                    <div class="order-details" id="active-order-details">
+                        <!-- Active order details will be populated here -->
+                    </div>
+                    <div class="completion-form">
+                        <h4>Complete Delivery</h4>
+                        <div class="upload-photo" id="upload-photo">
+                            <i class="fas fa-camera"></i>
+                            <p>Click to upload completion photo</p>
+                            <input type="file" id="completion-photo" accept="image/*" style="display: none;">
+                        </div>
+                        <button class="btn-primary" id="complete-delivery">Mark as Delivered</button>
+                    </div>
+                </div>
+
+                <div class="available-orders">
+                    <h3>Available Orders</h3>
+                    <div id="orders-list">
+                        <!-- Available orders will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Profile Section End -->
 
@@ -377,13 +669,23 @@
 
     <button class="open-map-btn" onclick="openMap()">Live Map 🚗</button>
     
+    <!-- Add modal for order details -->
+    <div id="orderDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeOrderDetails()">&times;</span>
+            <h2>Order Details</h2>
+            <div id="orderDetailsContent"></div>
+        </div>
+    </div>
+
     <!-- Profile Script -->
     <script>
         let currentUser = null;
         let userProfile = null;
         
-        // Tab switching
+        // Function to switch tabs
         function switchTab(tabName) {
+            // Remove active class from all tabs and contents
             document.querySelectorAll('.profile-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -391,20 +693,27 @@
                 content.classList.remove('active');
             });
             
+            // Add active class to selected tab and content
             document.querySelector(`.profile-tab[data-tab="${tabName}"]`).classList.add('active');
             document.getElementById(`${tabName}-tab-content`).classList.add('active');
-            
-            // Load data for the specific tab
-            if (tabName === 'orders') {
-                loadOrderHistory();
+
+            // If switching to work tab, check driver status
+            if (tabName === 'work') {
+                checkDriverStatus();
             }
         }
-        
+
         // Add click event listeners to tabs
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                switchTab(tab.dataset.tab);
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
             });
+            
+            checkAuthAndLoadProfile();
+            updateCartCount();
         });
         
         // Check if user is logged in and fetch profile data
@@ -656,7 +965,6 @@
                 }
                 
                 if (!orders || orders.length === 0) {
-                    // Show empty state if no orders
                     ordersContainer.innerHTML = `
                         <div class="empty-state">
                             <i class="fa fa-shopping-bag"></i>
@@ -666,7 +974,6 @@
                     return;
                 }
                 
-                // Create orders table
                 let tableHTML = `
                     <table class="orders-table">
                         <thead>
@@ -681,7 +988,6 @@
                         <tbody>
                 `;
                 
-                // Add each order to the table
                 orders.forEach(order => {
                     const orderDate = new Date(order.created_at).toLocaleDateString();
                     const status = order.status || 'Pending';
@@ -693,7 +999,7 @@
                             <td>${orderDate}</td>
                             <td>$${order.total_amount ? order.total_amount.toFixed(2) : '0.00'}</td>
                             <td><span class="status-pill ${statusClass}">${status}</span></td>
-                            <td><a href="#" onclick="viewOrderDetails(${order.id})">View Details</a></td>
+                            <td><button onclick="viewOrderDetails('${order.id}')" class="btn-view-details">View Details</button></td>
                         </tr>
                     `;
                 });
@@ -715,13 +1021,132 @@
             }
         }
         
-        // View order details
-        window.viewOrderDetails = function(orderId) {
-            // Implement order details view
-            console.log('View order details:', orderId);
-            // You could open a modal or navigate to a dedicated order details page
-            alert('Order details functionality coming soon!');
-        };
+        // View order details function
+        async function viewOrderDetails(orderId) {
+            try {
+                console.log('Fetching order details for:', orderId);
+                
+                // Fetch order details
+                const { data: order, error } = await window.supabaseClient
+                    .from('orders')
+                    .select('*')
+                    .eq('id', orderId)
+                    .single();
+
+                if (error) {
+                    console.error('Error fetching order details:', error);
+                    return;
+                }
+
+                console.log('Raw order data:', order);
+
+                const modal = document.getElementById('orderDetailsModal');
+                const content = document.getElementById('orderDetailsContent');
+
+                if (!modal || !content) {
+                    console.error('Modal elements not found');
+                    return;
+                }
+
+                const orderDate = new Date(order.created_at).toLocaleString();
+                
+                // Parse cart data
+                let cartItems = [];
+                try {
+                    if (order.cart_data) {
+                        cartItems = JSON.parse(order.cart_data);
+                        console.log('Parsed cart items:', cartItems);
+                    }
+                } catch (e) {
+                    console.error('Error parsing cart data:', e);
+                    console.log('Raw cart_data:', order.cart_data);
+                }
+
+                let html = `
+                    <div class="order-info">
+                        <p><strong>Order ID:</strong> #${order.id}</p>
+                        <p><strong>Date:</strong> ${orderDate}</p>
+                        <p><strong>Status:</strong> <span class="status-pill status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span></p>
+                        <p><strong>Total Amount:</strong> $${(order.total_amount || 0).toFixed(2)}</p>
+                        ${order.delivery_address ? `<p><strong>Delivery Address:</strong> ${order.delivery_address}</p>` : ''}
+                    </div>
+                    <div class="order-items">
+                        <h3>Items</h3>
+                        <table class="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                if (cartItems && cartItems.length > 0) {
+                    cartItems.forEach(item => {
+                        const quantity = item.qty || item.quantity || 1;
+                        const price = parseFloat(item.price) || 0;
+                        const itemTotal = price * quantity;
+                        
+                        html += `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${quantity}</td>
+                                <td>$${price.toFixed(2)}</td>
+                                <td>$${itemTotal.toFixed(2)}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    html += `
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No items found</td>
+                        </tr>
+                    `;
+                }
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                if (order.delivery_photo) {
+                    html += `
+                        <div class="delivery-photo">
+                            <h3>Delivery Photo</h3>
+                            <img src="${order.delivery_photo}" alt="Delivery confirmation" style="max-width: 100%; border-radius: 8px;">
+                        </div>
+                    `;
+                }
+
+                content.innerHTML = html;
+                modal.style.display = 'block';
+
+                console.log('Modal displayed');
+
+            } catch (error) {
+                console.error('Error displaying order details:', error);
+            }
+        }
+
+        // Close modal function
+        function closeOrderDetails() {
+            const modal = document.getElementById('orderDetailsModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderDetailsModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
         
         // Handle logout
         document.getElementById('logout-btn').addEventListener('click', async () => {
@@ -742,12 +1167,6 @@
             if (cartCount) cartCount.textContent = count;
         }
         
-        // Check authentication status on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthAndLoadProfile();
-            updateCartCount();
-        });
-
         // --- NEW: Function to create profile if data exists in localStorage ---
         async function createProfileIfMissing(userId) {
             console.log('createProfileIfMissing called for user:', userId); // Log start of function

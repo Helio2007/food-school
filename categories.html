@@ -4,60 +4,80 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Food Delivery Website</title>
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="../assets/img/logo.png" type="image/x-icon">
-    <!-- Font Awesome -->
+    <title>Food Categories - Food School</title>
+    <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!--Map-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="live-map.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="custom.js"></script>
     <script src="cart.js"></script>
+    <style>
+        .categories {
+            padding: 4% 0;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+        .category-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        .category-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .category-info {
+            padding: 15px;
+            text-align: center;
+        }
+        .category-info h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        .category-info p {
+            color: #666;
+            margin: 5px 0 0;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Section Start -->
     <header class="navbar">
         <nav id="site-top-nav" class="navbar-menu navbar-fixed-top">
             <div class="container">
-                <!-- logo -->
                 <div class="logo">
                     <a href="index.html" title="Logo">
-                        <img src="../assets/img/logo.png" alt="Logo" class="logo">
+                        <img src="assets/img/logo.png" alt="Logo" class="logo">
                     </a>
                 </div>
-                <!-- Main Menu -->
-                <div class="menu text-right">
+                <div class="menu">
                     <ul>
-                        <li><a class="hvr-underline-from-center" href="index.html"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a class="hvr-underline-from-center active" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a class="active" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
                         <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
                         <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="nutrition-scanner.html"><i class="fas fa-camera"></i> Scan Food</a></li>
                         <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
-                        <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                        <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                         <li class="cart-container">
-                            <a href="order.html" class="cart-link" id="cart-icon">
+                            <a href="#" class="cart-link" id="cart-icon">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span id="cart-count">0</span>
                             </a>
                             <div id="cart-content" class="cart-content">
-                                <h3 class="text-center">Shopping Cart</h3>
-                                <table class="cart-table" border="0">
-                                    <tr>
-                                        <th>Food</th>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Qty</th>
-                                        <th>Total</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </table>
-                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
+                                <!-- Cart content will be dynamically populated -->
                             </div>
                         </li>
                     </ul>
@@ -65,100 +85,108 @@
             </div>
         </nav>
     </header>
-    <!-- Navigation Section End -->
 
-    <!-- Category Section Start -->
+    <!-- Category Title Section -->
+    <section class="category-title text-center">
+        <div class="container">
+            <h1>Food Categories</h1>
+            <p>Explore our wide variety of delicious food categories</p>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
     <section class="categories">
         <div class="container">
-            <h2 class="text-center">Explore Foods</h2>
-            <div class="heading-border"></div>
+            <h1 class="text-center">Our Food Categories</h1>
+            <div class="category-grid">
+                <a href="pizza.html" class="category-card">
+                    <img src="assets/img/pizza.jpg" alt="Pizza">
+                    <div class="category-info">
+                        <h3>Pizza</h3>
+                        <p>9+ Varieties</p>
+                    </div>
+                </a>
 
-            <div class="grid-3">
-                <a href="categories-foods.html">
-                    <div class="float-container">
-                        <img src="../assets/img/pizza.jpg" class="img-responsive img-category" alt="">
-                        <h3 class="float-text text-white">Pizza</h3>
+                <a href="burger.html" class="category-card">
+                    <img src="assets/img/burger.jpg" alt="Burgers">
+                    <div class="category-info">
+                        <h3>Burgers</h3>
+                        <p>8+ Varieties</p>
                     </div>
                 </a>
-                <a href="categories-foods.html">
-                    <div class="float-container">
-                        <img src="../assets/img/sandwich.jpg" class="img-responsive img-category" alt="">
-                        <h3 class="float-text text-white">Sandwich</h3>
+
+                <a href="sandwich.html" class="category-card">
+                    <img src="assets/img/sandwich.jpg" alt="Sandwiches">
+                    <div class="category-info">
+                        <h3>Sandwiches</h3>
+                        <p>7+ Varieties</p>
                     </div>
                 </a>
-                <a href="categories-foods.html">
-                    <div class="float-container">
-                        <img src="../assets/img/burger.jpg" class="img-responsive img-category" alt="">
-                        <h3 class="float-text text-white">Burger</h3>
+
+                <a href="pasta.html" class="category-card">
+                    <img src="assets/img/pasta.jpg" alt="Pasta">
+                    <div class="category-info">
+                        <h3>Pasta</h3>
+                        <p>6+ Varieties</p>
                     </div>
                 </a>
-                <a href="categories-foods.html">
-                    <div class="float-container">
-                        <img src="../assets/img/sushi.jpg" class="img-responsive img-category" alt="">
-                        <h3 class="float-text text-white">Sushi</h3>
+
+                <a href="sushi.html" class="category-card">
+                    <img src="assets/img/sushi.jpg" alt="Sushi">
+                    <div class="category-info">
+                        <h3>Sushi</h3>
+                        <p>8+ Varieties</p>
                     </div>
                 </a>
-                <a href="categories-foods.html">
-                    <div class="float-container">
-                        <img src="../assets/img/dessert.jpg" class="img-responsive img-category" alt="">
-                        <h3 class="float-text text-white">Dessert</h3>
-                    </div>
-                </a>
-                <a href="categories-foods.html">
-                    <div class="float-container">
-                        <img src="../assets/img/steak.jpg" class="img-responsive img-category" alt="">
-                        <h3 class="float-text text-white">Steak</h3>
+
+                <a href="dessert.html" class="category-card">
+                    <img src="assets/img/dessert.jpg" alt="Desserts">
+                    <div class="category-info">
+                        <h3>Desserts</h3>
+                        <p>8+ Varieties</p>
                     </div>
                 </a>
             </div>
         </div>
     </section>
-    <!-- Category Section End -->
 
-    <!-- Footer Section Start -->
-    <section class="footer">
+    <!-- Footer Section -->
+    <footer class="footer">
         <div class="container">
             <div class="grid-3">
-                <div class="text-center">
-                    <h3>About Us</h3><br>
-                    <p>Fresh, fast, and at your doorstep! 🚀 Our food delivery app connects you with your favorite restaurants, bringing delicious meals right to you—hot, fresh, and hassle-free. Order now and taste the convenience! 🍽️🔥</p>
-                </div>
-                <div class="texr-center">
-                    <h3>Site Map</h3><br>
-                    <div class="site-links">
-                        <a href="categories.html"><i class="fas fa-list"></i> Categories</a>
-                        <a href="foods.html"><i class="fas fa-utensils"></i> Foods</a>
-                        <a href="order.html"><i class="fas fa-shopping-bag"></i> Order</a>
-                        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
-                        <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
-                    </div>
-                </div>
-                <div class="social-links">
-                    <h3>Social Links</h3><br>
+                <div class="footer-info">
+                    <h3>Food School</h3>
+                    <p>Delicious food delivery service bringing your favorite meals right to your door.</p>
                     <div class="social">
                         <ul>
                             <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
                             <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
                             <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                            <li><a href="#"><i class="fab fa-youtube"></i></a></li>
                         </ul>
                     </div>
                 </div>
+                <div class="site-links">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="categories.html">Categories</a>
+                    <a href="foods.html">Foods</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="contact-info">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Food Street, City, Country</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <p><i class="fas fa-envelope"></i> info@foodschool.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Food School. All Rights Reserved.</p>
             </div>
         </div>
-    </section>
-    <!-- Footer Section End -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="live-map.js"></script>
-    
-    <!-- Map popup -->
-    <div class="map-popup">
-        <button class="close-btn" onclick="closeMap()">×</button>
-        <div id="map"></div>
-        <div id="eta-info">Estimated delivery time: <span id="eta-time">15-20 min</span></div>
-    </div>
+    </footer>
 
-    <button class="open-map-btn" onclick="openMap()"><i class="fas fa-map-marker-alt"></i> Track Order</button>
+    <!-- Back To Top Button -->
+    <a href="#" id="back-to-top"><i class="fas fa-arrow-up"></i></a>
 </body>
 </html>

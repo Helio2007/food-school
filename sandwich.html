@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizza Menu - Food School</title>
+    <title>Sandwich Menu - Food School</title>
     <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,42 +12,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="custom.js"></script>
     <script src="cart.js"></script>
-    <style>
-        .food-menu-img {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-            border-radius: 8px 8px 0 0;
-        }
-        .food-menu-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.3s ease;
-        }
-        .food-menu-box:hover .food-menu-img img {
-            transform: scale(1.05);
-        }
-        .food-menu-box {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-        .food-menu-box:hover {
-            transform: translateY(-5px);
-        }
-        .food-menu-desc {
-            padding: 1rem;
-        }
-        .grid-3 {
-            gap: 2rem;
-            padding: 2rem;
-        }
-    </style>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -67,7 +31,6 @@
                         <li><a href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
                         <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                         <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                        <li><a href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
                         <li class="cart-container">
                             <a href="#" class="cart-link" id="cart-icon">
                                 <i class="fas fa-shopping-cart"></i>
@@ -86,27 +49,27 @@
     <!-- Category Title Section -->
     <section class="category-title text-center">
         <div class="container">
-            <h1>Pizza Menu</h1>
-            <p>Discover our delicious selection of handcrafted pizzas</p>
+            <h1>Sandwich Menu</h1>
+            <p>Fresh and delicious sandwiches made to order</p>
         </div>
     </section>
 
-    <!-- Pizza Menu Section -->
+    <!-- Sandwich Menu Section -->
     <section class="food-menu">
         <div class="container">
             <div class="grid-3">
-                <!-- Classic Pizzas -->
+                <!-- Classic Sandwiches -->
                 <div class="food-menu-box">
                     <div class="food-menu-img">
-                        <img src="assets/img/pizza/p1.jpg" alt="Margherita Pizza">
+                        <img src="assets/img/sandwich/s1.jpg" alt="Club Sandwich">
                     </div>
                     <div class="food-menu-desc">
-                        <h4>Margherita Pizza</h4>
-                        <p class="food-price">$12.99</p>
-                        <p class="food-details">Fresh tomatoes, mozzarella, basil, and our signature sauce</p>
+                        <h4>Club Sandwich</h4>
+                        <p class="food-price">$9.99</p>
+                        <p class="food-details">Turkey, bacon, lettuce, tomato, mayo on toasted bread</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Margherita Pizza", price: 12.99 }, this.previousElementSibling.value)'>
+                            <button class="btn-primary" onclick='addToCart({ name: "Club Sandwich", price: 9.99 }, this.previousElementSibling.value)'>
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
                         </div>
@@ -115,15 +78,15 @@
 
                 <div class="food-menu-box">
                     <div class="food-menu-img">
-                        <img src="assets/img/pizza/p2.jpg" alt="Pepperoni Pizza">
+                        <img src="assets/img/sandwich/s2.jpg" alt="BLT">
                     </div>
                     <div class="food-menu-desc">
-                        <h4>Pepperoni Pizza</h4>
-                        <p class="food-price">$14.99</p>
-                        <p class="food-details">Classic pepperoni with extra cheese and our signature sauce</p>
+                        <h4>BLT</h4>
+                        <p class="food-price">$7.99</p>
+                        <p class="food-details">Crispy bacon, fresh lettuce, tomato, mayo on toasted bread</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Pepperoni Pizza", price: 14.99 }, this.previousElementSibling.value)'>
+                            <button class="btn-primary" onclick='addToCart({ name: "BLT", price: 7.99 }, this.previousElementSibling.value)'>
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
                         </div>
@@ -132,50 +95,33 @@
 
                 <div class="food-menu-box">
                     <div class="food-menu-img">
-                        <img src="assets/img/pizza/p3.jpg" alt="Supreme Pizza">
+                        <img src="assets/img/sandwich/s3.jpg" alt="Grilled Cheese">
                     </div>
                     <div class="food-menu-desc">
-                        <h4>Supreme Pizza</h4>
-                        <p class="food-price">$16.99</p>
-                        <p class="food-details">Loaded with vegetables, meats, and extra cheese</p>
+                        <h4>Grilled Cheese</h4>
+                        <p class="food-price">$6.99</p>
+                        <p class="food-details">Melted cheddar and mozzarella on buttery toasted bread</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Supreme Pizza", price: 16.99 }, this.previousElementSibling.value)'>
+                            <button class="btn-primary" onclick='addToCart({ name: "Grilled Cheese", price: 6.99 }, this.previousElementSibling.value)'>
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Specialty Pizzas -->
+                <!-- Specialty Sandwiches -->
                 <div class="food-menu-box">
                     <div class="food-menu-img">
-                        <img src="assets/img/pizza/p4.jpg" alt="BBQ Chicken Pizza">
+                        <img src="assets/img/sandwich/s4.jpg" alt="Italian Sub">
                     </div>
                     <div class="food-menu-desc">
-                        <h4>BBQ Chicken Pizza</h4>
-                        <p class="food-price">$15.99</p>
-                        <p class="food-details">Grilled chicken, BBQ sauce, red onions, and cilantro</p>
+                        <h4>Italian Sub</h4>
+                        <p class="food-price">$10.99</p>
+                        <p class="food-details">Ham, salami, pepperoni, provolone, Italian dressing</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "BBQ Chicken Pizza", price: 15.99 }, this.previousElementSibling.value)'>
-                                <i class="fas fa-cart-plus"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-menu-box">
-                    <div class="food-menu-img">
-                        <img src="assets/img/pizza/p5.jpg" alt="Mediterranean Pizza">
-                    </div>
-                    <div class="food-menu-desc">
-                        <h4>Mediterranean Pizza</h4>
-                        <p class="food-price">$15.99</p>
-                        <p class="food-details">Spinach, feta, olives, tomatoes, and herbs</p>
-                        <div class="quantity-wrapper">
-                            <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Mediterranean Pizza", price: 15.99 }, this.previousElementSibling.value)'>
+                            <button class="btn-primary" onclick='addToCart({ name: "Italian Sub", price: 10.99 }, this.previousElementSibling.value)'>
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
                         </div>
@@ -184,33 +130,15 @@
 
                 <div class="food-menu-box">
                     <div class="food-menu-img">
-                        <img src="assets/img/pizza/p6.jpg" alt="Buffalo Chicken Pizza">
+                        <img src="assets/img/sandwich/s5.jpg" alt="Veggie Delight">
                     </div>
                     <div class="food-menu-desc">
-                        <h4>Buffalo Chicken Pizza</h4>
-                        <p class="food-price">$15.99</p>
-                        <p class="food-details">Spicy buffalo chicken, ranch, and blue cheese</p>
+                        <h4>Veggie Delight</h4>
+                        <p class="food-price">$8.99</p>
+                        <p class="food-details">Cucumber, avocado, lettuce, tomato, sprouts, hummus</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Buffalo Chicken Pizza", price: 15.99 }, this.previousElementSibling.value)'>
-                                <i class="fas fa-cart-plus"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gourmet Pizzas -->
-                <div class="food-menu-box">
-                    <div class="food-menu-img">
-                        <img src="assets/img/pizza/p7.jpg" alt="Truffle Mushroom Pizza">
-                    </div>
-                    <div class="food-menu-desc">
-                        <h4>Truffle Mushroom Pizza</h4>
-                        <p class="food-price">$18.99</p>
-                        <p class="food-details">Wild mushrooms, truffle oil, and fresh herbs</p>
-                        <div class="quantity-wrapper">
-                            <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Truffle Mushroom Pizza", price: 18.99 }, this.previousElementSibling.value)'>
+                            <button class="btn-primary" onclick='addToCart({ name: "Veggie Delight", price: 8.99 }, this.previousElementSibling.value)'>
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
                         </div>
@@ -219,32 +147,15 @@
 
                 <div class="food-menu-box">
                     <div class="food-menu-img">
-                        <img src="assets/img/pizza/p8.jpg" alt="Prosciutto Arugula Pizza">
+                        <img src="assets/img/sandwich/s6.jpg" alt="Tuna Melt">
                     </div>
                     <div class="food-menu-desc">
-                        <h4>Prosciutto Arugula Pizza</h4>
-                        <p class="food-price">$19.99</p>
-                        <p class="food-details">Prosciutto, arugula, parmesan, and balsamic glaze</p>
+                        <h4>Tuna Melt</h4>
+                        <p class="food-price">$9.99</p>
+                        <p class="food-details">House-made tuna salad, melted cheddar, tomato</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Prosciutto Arugula Pizza", price: 19.99 }, this.previousElementSibling.value)'>
-                                <i class="fas fa-cart-plus"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-menu-box">
-                    <div class="food-menu-img">
-                        <img src="assets/img/pizza/p9.jpg" alt="Seafood Pizza">
-                    </div>
-                    <div class="food-menu-desc">
-                        <h4>Seafood Pizza</h4>
-                        <p class="food-price">$21.99</p>
-                        <p class="food-details">Shrimp, scallops, garlic, and fresh herbs</p>
-                        <div class="quantity-wrapper">
-                            <input type="number" value="1" min="1" class="quantity">
-                            <button class="btn-primary" onclick='addToCart({ name: "Seafood Pizza", price: 21.99 }, this.previousElementSibling.value)'>
+                            <button class="btn-primary" onclick='addToCart({ name: "Tuna Melt", price: 9.99 }, this.previousElementSibling.value)'>
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
                         </div>
@@ -266,7 +177,6 @@
                             <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
                             <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                             <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -293,4 +203,4 @@
     <!-- Back To Top Button -->
     <a href="#" id="back-to-top"><i class="fas fa-arrow-up"></i></a>
 </body>
-</html>
+</html> 

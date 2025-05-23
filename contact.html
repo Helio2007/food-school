@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="style.css">
     <script src="custom.js"></script>
     <script src="cart.js"></script>
+    <!-- Add Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -37,6 +40,7 @@
                         <li><a class="hvr-underline-from-center" href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
                         <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
                         <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="nutrition-scanner.html"><i class="fas fa-camera"></i> Scan Food</a></li>
                         <li><a class="hvr-underline-from-center active" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                         <li><a class="hvr-underline-from-center" href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                         <li><a class="hvr-underline-from-center" href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
@@ -178,5 +182,79 @@
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="live-map.js"></script>
+   
+    <!-- Contact Form Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.querySelector('.contact-form form');
+            const errorMessage = document.createElement('div');
+            errorMessage.style.color = '#e03131';
+            errorMessage.style.backgroundColor = '#ffebeb';
+            errorMessage.style.padding = '10px';
+            errorMessage.style.borderRadius = '5px';
+            errorMessage.style.marginBottom = '15px';
+            errorMessage.style.display = 'none';
+            contactForm.prepend(errorMessage);
+
+            const successMessage = document.createElement('div');
+            successMessage.style.color = '#2e7d32';
+            successMessage.style.backgroundColor = '#e8f5e9';
+            successMessage.style.padding = '10px';
+            successMessage.style.borderRadius = '5px';
+            successMessage.style.marginBottom = '15px';
+            successMessage.style.display = 'none';
+            contactForm.prepend(successMessage);
+
+            contactForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+
+                // Basic validation
+                if (!name || !email || !message) {
+                    errorMessage.textContent = 'Please fill in name, email, and message fields.';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                try {
+                    // Insert data into Supabase
+                    const { data, error } = await window.supabaseClient
+                        .from('contact_messages')
+                        .insert([
+                            {
+                                name: name,
+                                email: email,
+                                phone: phone,
+                                subject: subject,
+                                message: message
+                            }
+                        ]);
+
+                    if (error) {
+                        console.error('Error sending message:', error);
+                        errorMessage.textContent = 'Failed to send message: ' + error.message;
+                        errorMessage.style.display = 'block';
+                    } else {
+                        console.log('Message sent successfully:', data);
+                        successMessage.textContent = 'Your message has been sent successfully!';
+                        successMessage.style.display = 'block';
+                        contactForm.reset(); // Clear the form
+                    }
+                } catch (error) {
+                    console.error('An unexpected error occurred:', error);
+                    errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+                    errorMessage.style.display = 'block';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
