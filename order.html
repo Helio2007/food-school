@@ -21,6 +21,7 @@
     
     <!-- Custom JS -->
     <script src="cart.js"></script>
+    <script src="currency.js"></script>
     <script src="custom.js"></script>
     <!-- Add Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -389,13 +390,13 @@
             <div class="delivery-area" style="margin-top:20px;">
               <h3>Delivery Area</h3>
               <label style="margin-right:20px;">
-                <input type="radio" name="delivery-area" value="inside" checked onchange="updateDeliveryFee()"> Inside Tirana (1€)
+                <input type="radio" name="delivery-area" value="inside" checked onchange="updateDeliveryFee()"> Inside Tirana (1$)
               </label>
               <label>
-                <input type="radio" name="delivery-area" value="outside" onchange="updateDeliveryFee()"> Outside Tirana (3€)
+                <input type="radio" name="delivery-area" value="outside" onchange="updateDeliveryFee()"> Outside Tirana (3$)
               </label>
             </div>
-            <div style="margin-top:10px; font-weight:bold;">Delivery Fee: <span id="delivery-fee">€1</span></div>
+            <div style="margin-top:10px; font-weight:bold;">Delivery Fee: <span id="delivery-fee" data-base-amount="1" data-currency="EUR">€1</span></div>
           </div>
           
           <button type="submit">Confirm Order</button>
@@ -445,9 +446,9 @@
               <td>${index + 1}</td>
               <td><img src="${imgPath}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
               <td>${item.name}</td>
-              <td>$${item.price.toFixed(2)}</td>
+              <td data-price="${item.price}" data-currency="USD">${formatPrice(item.price, getUserCurrency())}</td>
               <td>${quantity}</td>
-              <td>$${itemTotal.toFixed(2)}</td>
+              <td data-price="${itemTotal}" data-currency="USD">${formatPrice(itemTotal, getUserCurrency())}</td>
               <td><button onclick="removeItem(${index})">&times;</button></td>
             `;
             total += itemTotal;
@@ -457,6 +458,29 @@
     
         // Update total with delivery fee
         updateTotalWithDeliveryFee();
+
+        // Add event listener for currency changes
+        document.addEventListener('currencyChanged', function() {
+            // Update all prices in the cart table
+            const rows = tableBody.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells.length >= 6) {
+                    // Update price cell
+                    const priceCell = cells[3];
+                    const price = parseFloat(priceCell.getAttribute('data-price'));
+                    priceCell.textContent = formatPrice(price, getUserCurrency());
+                    
+                    // Update total cell
+                    const totalCell = cells[5];
+                    const total = parseFloat(totalCell.getAttribute('data-price'));
+                    totalCell.textContent = formatPrice(total, getUserCurrency());
+                }
+            }
+            
+            // Update the total amount and delivery fee
+            updateTotalWithDeliveryFee();
+        });
     
         function removeItem(index) {
           cart.splice(index, 1);
@@ -857,8 +881,15 @@
         // Update total with delivery fee
         function updateTotalWithDeliveryFee() {
           const totalWithFee = total + deliveryFee;
-          document.getElementById("total-amount").textContent = `$${totalWithFee.toFixed(2)}`;
-          document.getElementById("delivery-fee").textContent = `€${deliveryFee}`;
+          const totalElement = document.getElementById("total-amount");
+          totalElement.setAttribute('data-base-amount', totalWithFee);
+          totalElement.setAttribute('data-currency', 'USD');
+          totalElement.textContent = formatPrice(totalWithFee, getUserCurrency());
+          
+          const deliveryFeeElement = document.getElementById("delivery-fee");
+          deliveryFeeElement.setAttribute('data-base-amount', deliveryFee);
+          deliveryFeeElement.setAttribute('data-currency', 'EUR');
+          deliveryFeeElement.textContent = formatPrice(deliveryFee, getUserCurrency());
         }
 
         // Update delivery fee when area changes
@@ -1036,6 +1067,24 @@
             modal.style.display = 'none';
         }
     }
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof addCurrencySelector === 'function') {
+          addCurrencySelector();
+        }
+      });
+    </script>
+    <script>
+      setTimeout(function() {
+        console.log('Forcing currency selector...');
+        if (typeof addCurrencySelector === 'function') {
+          addCurrencySelector();
+        } else {
+          console.log('addCurrencySelector is not defined');
+        }
+        console.log('Menu ul:', document.querySelector('.menu ul'));
+      }, 1000);
     </script>
 </body>
 </html>

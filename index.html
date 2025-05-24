@@ -20,7 +20,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom JS -->
     <script src="custom.js"></script>
-    <script src="cart.js"></script>
+    <script src="cart.js" defer></script>
+    <script src="currency.js" defer></script>
+    <!-- Add Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Navigation Section Start -->
@@ -159,7 +162,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Pizza</h4>
-                        <p class="food-price">$9.99</p>
+                        <p class="food-price" data-price="9.99" data-currency="USD">$9.99</p>
                         <p class="food-details">Crispy crust, melty cheese, and toppings you'll crave again and again.</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -175,7 +178,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Sandwich</h4>
-                        <p class="food-price">$5.49</p>
+                        <p class="food-price" data-price="5.49" data-currency="USD">$5.49</p>
                         <p class="food-details">Stacked with flavor, layered with fresh fillings for a quick bite.</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -191,7 +194,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Burger</h4>
-                        <p class="food-price">$6.99</p>
+                        <p class="food-price" data-price="6.99" data-currency="USD">$6.99</p>
                         <p class="food-details">Juicy patties, melted cheese, and soft buns—comfort food at its best.</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -207,7 +210,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Pasta</h4>
-                        <p class="food-price">$8.99</p>
+                        <p class="food-price" data-price="8.99" data-currency="USD">$8.99</p>
                         <p class="food-details">Classic Italian delight, served with rich sauces and fresh ingredients.</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -223,7 +226,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Sushi</h4>
-                        <p class="food-price">$12.99</p>
+                        <p class="food-price" data-price="12.99" data-currency="USD">$12.99</p>
                         <p class="food-details">Delicate, fresh, and full of flavor—crafted with care and tradition.</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -239,7 +242,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Salad</h4>
-                        <p class="food-price">$7.49</p>
+                        <p class="food-price" data-price="7.49" data-currency="USD">$7.49</p>
                         <p class="food-details">Fresh, crisp, and colorful—a healthy option packed with nutrients.</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">

@@ -12,6 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="custom.js"></script>
     <script src="cart.js"></script>
+    <script src="currency.js" defer></script>
     <style>
         .food-menu-img {
             width: 100%;
@@ -102,7 +103,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Margherita Pizza</h4>
-                        <p class="food-price">$12.99</p>
+                        <p class="food-price" data-price="12.99" data-currency="USD">$12.99</p>
                         <p class="food-details">Fresh tomatoes, mozzarella, basil, and our signature sauce</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -119,7 +120,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Pepperoni Pizza</h4>
-                        <p class="food-price">$14.99</p>
+                        <p class="food-price" data-price="14.99" data-currency="USD">$14.99</p>
                         <p class="food-details">Classic pepperoni with extra cheese and our signature sauce</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -136,7 +137,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Supreme Pizza</h4>
-                        <p class="food-price">$16.99</p>
+                        <p class="food-price" data-price="16.99" data-currency="USD">$16.99</p>
                         <p class="food-details">Loaded with vegetables, meats, and extra cheese</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -154,7 +155,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>BBQ Chicken Pizza</h4>
-                        <p class="food-price">$15.99</p>
+                        <p class="food-price" data-price="15.99" data-currency="USD">$15.99</p>
                         <p class="food-details">Grilled chicken, BBQ sauce, red onions, and cilantro</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -171,7 +172,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Mediterranean Pizza</h4>
-                        <p class="food-price">$15.99</p>
+                        <p class="food-price" data-price="15.99" data-currency="USD">$15.99</p>
                         <p class="food-details">Spinach, feta, olives, tomatoes, and herbs</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -188,7 +189,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Buffalo Chicken Pizza</h4>
-                        <p class="food-price">$15.99</p>
+                        <p class="food-price" data-price="15.99" data-currency="USD">$15.99</p>
                         <p class="food-details">Spicy buffalo chicken, ranch, and blue cheese</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -206,7 +207,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Truffle Mushroom Pizza</h4>
-                        <p class="food-price">$18.99</p>
+                        <p class="food-price" data-price="18.99" data-currency="USD">$18.99</p>
                         <p class="food-details">Wild mushrooms, truffle oil, and fresh herbs</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -223,7 +224,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Prosciutto Arugula Pizza</h4>
-                        <p class="food-price">$19.99</p>
+                        <p class="food-price" data-price="19.99" data-currency="USD">$19.99</p>
                         <p class="food-details">Prosciutto, arugula, parmesan, and balsamic glaze</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -240,7 +241,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Seafood Pizza</h4>
-                        <p class="food-price">$21.99</p>
+                        <p class="food-price" data-price="21.99" data-currency="USD">$21.99</p>
                         <p class="food-details">Shrimp, scallops, garlic, and fresh herbs</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">

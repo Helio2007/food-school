@@ -12,6 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="custom.js"></script>
     <script src="cart.js"></script>
+    <script src="currency.js" defer></script>
     <style>
         .food-menu-img {
             width: 100%;
@@ -135,7 +136,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Classic Cheeseburger</h4>
-                        <p class="food-price">$8.99</p>
+                        <p class="food-price" data-price="8.99" data-currency="USD">$8.99</p>
                         <p class="food-details">Beef patty, cheddar cheese, lettuce, tomato, onions, pickles</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -152,7 +153,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Bacon Deluxe</h4>
-                        <p class="food-price">$10.99</p>
+                        <p class="food-price" data-price="10.99" data-currency="USD">$10.99</p>
                         <p class="food-details">Beef patty, bacon, cheddar, lettuce, tomato, special sauce</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -169,7 +170,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Mushroom Swiss</h4>
-                        <p class="food-price">$11.99</p>
+                        <p class="food-price" data-price="11.99" data-currency="USD">$11.99</p>
                         <p class="food-details">Beef patty, sautéed mushrooms, swiss cheese, garlic aioli</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -187,7 +188,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>BBQ Ranch</h4>
-                        <p class="food-price">$12.99</p>
+                        <p class="food-price" data-price="12.99" data-currency="USD">$12.99</p>
                         <p class="food-details">Beef patty, BBQ sauce, ranch, onion rings, cheddar</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -204,7 +205,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Spicy Jalapeno</h4>
-                        <p class="food-price">$11.99</p>
+                        <p class="food-price" data-price="11.99" data-currency="USD">$11.99</p>
                         <p class="food-details">Beef patty, jalapeños, pepper jack, chipotle mayo</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">
@@ -221,7 +222,7 @@
                     </div>
                     <div class="food-menu-desc">
                         <h4>Veggie Burger</h4>
-                        <p class="food-price">$10.99</p>
+                        <p class="food-price" data-price="10.99" data-currency="USD">$10.99</p>
                         <p class="food-details">Plant-based patty, avocado, lettuce, tomato, vegan mayo</p>
                         <div class="quantity-wrapper">
                             <input type="number" value="1" min="1" class="quantity">

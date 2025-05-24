@@ -69,16 +69,18 @@ function addToCart(item, quantity = 1) {
     if (existingItemIndex > -1) {
         // Update quantity if item exists
         cart[existingItemIndex].quantity += quantity;
-  } else {
+        cart[existingItemIndex].total = cart[existingItemIndex].price * cart[existingItemIndex].quantity;
+    } else {
         // Add new item if it doesn't exist
         cart.push({
             name: item.name,
             price: item.price,
             quantity: quantity,
             image: item.image || getDefaultImage(item.name),
-            total: item.price * quantity // Add total for backward compatibility
+            total: item.price * quantity,
+            currency: getUserCurrency() // Store the current currency
         });
-  }
+    }
 
     // Save cart and update UI
     saveCart();
@@ -201,6 +203,7 @@ function renderCart() {
     
     // Add items to cart
     let total = 0;
+    const currentCurrency = getUserCurrency();
     
     if (cart.length === 0) {
         // Show empty cart message
@@ -219,7 +222,7 @@ function renderCart() {
             row.innerHTML = `
                 <td><img src="${item.image}" alt="${item.name}"></td>
                 <td>${item.name}</td>
-                <td>$${item.price.toFixed(2)}</td>
+                <td data-price="${item.price}" data-currency="${currentCurrency}">${formatPrice(item.price, currentCurrency)}</td>
                 <td>
                     <div class="quantity-controls">
                         <button class="qty-btn qty-decrease" data-index="${index}">-</button>
@@ -227,7 +230,7 @@ function renderCart() {
                         <button class="qty-btn qty-increase" data-index="${index}">+</button>
                     </div>
                 </td>
-                <td>$${itemTotal.toFixed(2)}</td>
+                <td data-price="${itemTotal}" data-currency="${currentCurrency}">${formatPrice(itemTotal, currentCurrency)}</td>
                 <td><a href="#" class="btn-delete" data-index="${index}"><i class="fas fa-times"></i></a></td>
             `;
             cartTable.appendChild(row);
@@ -238,7 +241,7 @@ function renderCart() {
         totalRow.className = 'cart-total';
         totalRow.innerHTML = `
             <th colspan="4" class="text-right">Total</th>
-            <th>$${total.toFixed(2)}</th>
+            <th id="total-amount" data-base-amount="${total}" data-currency="${currentCurrency}">${formatPrice(total, currentCurrency)}</th>
             <th></th>
         `;
         cartTable.appendChild(totalRow);
@@ -479,5 +482,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+});
+
+// Add event listener for currency changes
+document.addEventListener('currencyChanged', function() {
+    renderCart();
 });
 
