@@ -328,6 +328,8 @@
           <tbody id="cart-table"></tbody>
         </table>
         <h3>Total: <span id="total-amount">$0</span></h3>
+        <div id="user-points-box" style="display:none; margin-bottom:10px; padding:12px; background:#f8f9fa; border-radius:8px; text-align:center; font-size:16px; font-weight:bold; color:#ff3b3b;"></div>
+        <div id="redeem-points-box" style="display:none; margin-bottom:10px; text-align:center;"></div>
     
         <form onsubmit="return confirmOrder(event)">
           <input type="text" placeholder="Enter your name..." required>
@@ -404,20 +406,27 @@
       </section>
     
       <script>
-        // Check both new and old storage formats
-        const savedCart = localStorage.getItem("foodCart") || localStorage.getItem("cart");
-        console.log("Raw data from localStorage:", savedCart);
-        if (savedCart) {
+        window.cart = window.cart || [];
+        var cart = window.cart;
+        const savedCart = localStorage.getItem('cart');
+        // Load cart from localStorage if empty
+        if (cart.length === 0) {
           try {
-            cart = JSON.parse(savedCart);
-            console.log("Loaded cart from storage (parsed):", cart);
-          } catch (error) {
-            console.error("Error parsing cart data:", error);
+            const saved = localStorage.getItem('cart');
+            if (saved) {
+              cart = JSON.parse(saved);
+              window.cart = cart;
+            }
+          } catch (e) {
             cart = [];
+            window.cart = cart;
           }
         }
-        
-        let total = 0;
+        let pointsRedeemed = localStorage.getItem('redeemPoints') === 'yes';
+        const pointsToRedeem = 500;
+        let discountAmount = 200; // 200 ALL/EUR/USD
+        let canRedeem = false;
+    
         let deliveryOption = "asap";
         let scheduledTime = null;
         let currentUser = null;
@@ -428,74 +437,93 @@
         // Debug: Log cart contents
         console.log("Cart contents:", cart);
         
-        if (cart.length === 0) {
-          const row = document.createElement("tr");
-          row.innerHTML = `<td colspan="7" style="text-align: center;">Your cart is empty. <a href="foods.html">Add some delicious food!</a></td>`;
-          tableBody.appendChild(row);
-        } else {
-          cart.forEach((item, index) => {
-            const imgPath = item.image || `assets/img/${item.name.toLowerCase()}.jpg`;
-            console.log('Image path:', imgPath);
-            
-            // Handle both old (qty) and new (quantity) formats
-            const quantity = item.qty || item.quantity || 1;
-            const itemTotal = parseFloat((item.price * quantity).toFixed(2));
-            
+        function renderCartAndTotals() {
+          let total = 0;
+          tableBody.innerHTML = '';
+          if (cart.length === 0) {
             const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${index + 1}</td>
-              <td><img src="${imgPath}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
-              <td>${item.name}</td>
-              <td data-price="${item.price}" data-currency="USD">${formatPrice(item.price, getUserCurrency())}</td>
-              <td>${quantity}</td>
-              <td data-price="${itemTotal}" data-currency="USD">${formatPrice(itemTotal, getUserCurrency())}</td>
-              <td><button onclick="removeItem(${index})">&times;</button></td>
-            `;
-            total += itemTotal;
+            let debugMsg = `<div style='color:#e03131; font-size:14px; margin-bottom:8px;'>Debug: localStorage['cart'] = ${JSON.stringify(savedCart)}<br>Parsed cart = ${JSON.stringify(cart)}</div>`;
+            row.innerHTML = `<td colspan="7" style="text-align: center;">Your cart is empty. <a href="foods.html">Add some delicious food!</a>${debugMsg}</td>`;
             tableBody.appendChild(row);
-          });
+            document.getElementById('user-points-box').style.display = 'none';
+            document.getElementById('redeem-points-box').style.display = 'none';
+          } else {
+            cart.forEach((item, index) => {
+              const imgPath = item.image || `assets/img/${item.name.toLowerCase()}.jpg`;
+              const quantity = item.qty || item.quantity || 1;
+              const itemTotal = parseFloat((item.price * quantity).toFixed(2));
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${index + 1}</td>
+                <td><img src="${imgPath}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                <td>${item.name}</td>
+                <td data-price="${item.price}" data-currency="USD">${formatPrice(item.price, getUserCurrency())}</td>
+                <td>${quantity}</td>
+                <td data-price="${itemTotal}" data-currency="USD">${formatPrice(itemTotal, getUserCurrency())}</td>
+                <td><button onclick="removeItem(${index})">&times;</button></td>
+              `;
+              total += itemTotal;
+              tableBody.appendChild(row);
+            });
+            fetchAndShowUserPoints();
+            updateTotalWithDeliveryFee();
+          }
+          window.cartTotal = total;
         }
+        renderCartAndTotals();
     
         // Update total with delivery fee
-        updateTotalWithDeliveryFee();
+        let points = 0;
 
-        // Add event listener for currency changes
-        document.addEventListener('currencyChanged', function() {
-            // Update all prices in the cart table
-            const rows = tableBody.getElementsByTagName('tr');
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                if (cells.length >= 6) {
-                    // Update price cell
-                    const priceCell = cells[3];
-                    const price = parseFloat(priceCell.getAttribute('data-price'));
-                    priceCell.textContent = formatPrice(price, getUserCurrency());
-                    
-                    // Update total cell
-                    const totalCell = cells[5];
-                    const total = parseFloat(totalCell.getAttribute('data-price'));
-                    totalCell.textContent = formatPrice(total, getUserCurrency());
+        // Fetch user points and show UI
+        async function fetchAndShowUserPoints() {
+            try {
+                const { data: { user } } = await window.supabaseClient.auth.getUser();
+                if (!user) return;
+                const { data, error } = await window.supabaseClient
+                    .from('user_points')
+                    .select('points')
+                    .eq('user_id', user.id)
+                    .single();
+                const box = document.getElementById('user-points-box');
+                const redeemBox = document.getElementById('redeem-points-box');
+                if (error || !data) {
+                    box.style.display = 'none';
+                    redeemBox.style.display = 'none';
+                    return;
                 }
+                points = data.points;
+                console.log('Fetched points:', points, 'pointsToRedeem:', pointsToRedeem);
+                box.textContent = `Your Points: ${points}`;
+                box.style.display = '';
+                if (points >= pointsToRedeem) {
+                    canRedeem = true;
+                    const discountInCurrency = convertCurrency(discountAmount, 'ALL', getUserCurrency());
+                    redeemBox.innerHTML = `<label><input type="checkbox" id="redeem-points-checkbox"${pointsRedeemed ? ' checked' : ''}> Redeem 500 points for ${formatPrice(discountInCurrency, getUserCurrency())} off</label>`;
+                    redeemBox.style.display = '';
+                    document.getElementById('redeem-points-checkbox').addEventListener('change', function(e) {
+                        pointsRedeemed = e.target.checked;
+                        renderCartAndTotals();
+                        localStorage.setItem('redeemPoints', pointsRedeemed ? 'yes' : 'no');
+                        location.reload();
+                    });
+                } else {
+                    redeemBox.style.display = 'none';
+                }
+            } catch (e) {
+                document.getElementById('user-points-box').style.display = 'none';
+                document.getElementById('redeem-points-box').style.display = 'none';
             }
-            
-            // Update the total amount and delivery fee
-            updateTotalWithDeliveryFee();
-        });
+        }
+
+        fetchAndShowUserPoints();
+        updateTotalWithDeliveryFee();
     
         function removeItem(index) {
           cart.splice(index, 1);
-          
-          // Update both cart storage locations for compatibility
           localStorage.setItem("cart", JSON.stringify(cart));
-          localStorage.setItem("foodCart", JSON.stringify(cart.map(item => ({
-            name: item.name,
-            price: item.price,
-            quantity: item.qty || item.quantity,
-            image: item.image,
-            total: item.price * (item.qty || item.quantity)
-          }))));
-          
-          location.reload();
+          localStorage.setItem("foodCart", JSON.stringify(cart));
+          renderCartAndTotals();
         }
     
         async function confirmOrder(event) {
@@ -576,7 +604,7 @@
             // Create simplified order with minimal fields
             const orderData = {
               user_id: user.id,
-              total_amount: parseFloat((total + deliveryFee).toFixed(2)),
+              total_amount: parseFloat((window.cartTotal + deliveryFee).toFixed(2)),
               status: 'Pending',
               delivery_address: address,
               cart_data: JSON.stringify(cart),
@@ -599,7 +627,7 @@
               // Try with just the essential fields if the first attempt failed
               const minimalOrderData = {
                 user_id: user.id,
-                total_amount: parseFloat((total + deliveryFee).toFixed(2)),
+                total_amount: parseFloat((window.cartTotal + deliveryFee).toFixed(2)),
                 cart_data: JSON.stringify(cart),
                 delivery_fee: deliveryFee
               };
@@ -709,11 +737,16 @@
             
             // Clear the cart from both storage locations
             localStorage.removeItem("cart");
-            localStorage.removeItem("foodCart");
             alert('Order submitted successfully! Redirecting to payment...');
             
             // Continue to payment page
-            window.location.href = `payment.html?total=${(total + deliveryFee).toFixed(2)}&order_id=${orderResult[0].id}`;
+            let discountApplied = (localStorage.getItem('redeemPoints') === 'yes');
+            let discountInCurrency = discountApplied ? convertCurrency(discountAmount, 'ALL', getUserCurrency()) : 0;
+            let totalInCurrency = convertCurrency(window.cartTotal || 0, 'USD', getUserCurrency());
+            let deliveryFeeInCurrency = convertCurrency(deliveryFee, 'USD', getUserCurrency());
+            let finalTotal = totalInCurrency + deliveryFeeInCurrency - discountInCurrency;
+            if (finalTotal < 0) finalTotal = 0;
+            window.location.href = `payment.html?total=${finalTotal.toFixed(2)}&order_id=${orderResult[0].id}&currency=${getUserCurrency()}&discount=${discountInCurrency.toFixed(2)}`;
             
           } catch (error) {
             console.error('Order submission error:', error);
@@ -725,7 +758,7 @@
     
         function updateCartCount() {
           // Check both new and old storage locations
-          const savedCart = localStorage.getItem("foodCart") || localStorage.getItem("cart");
+          const savedCart = localStorage.getItem("cart");
           let cartItems = [];
           
           if (savedCart) {
@@ -880,16 +913,30 @@
 
         // Update total with delivery fee
         function updateTotalWithDeliveryFee() {
-          const totalWithFee = total + deliveryFee;
+          const userCurrency = getUserCurrency();
+          // Use window.cartTotal instead of total
+          let totalInCurrency = convertCurrency(window.cartTotal || 0, 'USD', userCurrency);
+          let deliveryFeeInCurrency = convertCurrency(deliveryFee, 'USD', userCurrency);
+          let totalWithFee = totalInCurrency + deliveryFeeInCurrency;
+          let discountInCurrency = 0;
+          if (pointsRedeemed) {
+              discountInCurrency = convertCurrency(discountAmount, 'ALL', userCurrency);
+              totalWithFee -= discountInCurrency;
+              if (totalWithFee < 0) totalWithFee = 0;
+          }
           const totalElement = document.getElementById("total-amount");
           totalElement.setAttribute('data-base-amount', totalWithFee);
-          totalElement.setAttribute('data-currency', 'USD');
-          totalElement.textContent = formatPrice(totalWithFee, getUserCurrency());
-          
+          totalElement.setAttribute('data-currency', userCurrency);
+          // Show subtotal and discount if points are redeemed
+          if (pointsRedeemed && discountInCurrency > 0) {
+            totalElement.innerHTML = `<span style='font-size:1em;color:#333;'>Subtotal: ${formatPrice(totalInCurrency + deliveryFeeInCurrency, userCurrency)}</span><br><span style='color:#2e7d32;'>- ${formatPrice(discountInCurrency, userCurrency)} (points discount)</span><br><span style='font-size:1.2em;font-weight:bold;'>Total: ${formatPrice(totalWithFee, userCurrency)}</span>`;
+          } else {
+            totalElement.textContent = formatPrice(totalWithFee, userCurrency);
+          }
           const deliveryFeeElement = document.getElementById("delivery-fee");
-          deliveryFeeElement.setAttribute('data-base-amount', deliveryFee);
-          deliveryFeeElement.setAttribute('data-currency', 'EUR');
-          deliveryFeeElement.textContent = formatPrice(deliveryFee, getUserCurrency());
+          deliveryFeeElement.setAttribute('data-base-amount', deliveryFeeInCurrency);
+          deliveryFeeElement.setAttribute('data-currency', userCurrency);
+          deliveryFeeElement.textContent = formatPrice(deliveryFeeInCurrency, userCurrency);
         }
 
         // Update delivery fee when area changes
@@ -898,6 +945,41 @@
           deliveryFee = area === 'inside' ? 1 : 3;
           updateTotalWithDeliveryFee();
         }
+
+        // Add event listener for currency changes
+        document.addEventListener('currencyChanged', function() {
+            // Update all prices in the cart table
+            const rows = tableBody.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells.length >= 6) {
+                    // Update price cell
+                    const priceCell = cells[3];
+                    const price = parseFloat(priceCell.getAttribute('data-price'));
+                    priceCell.textContent = formatPrice(convertCurrency(price, 'USD', getUserCurrency()), getUserCurrency());
+                    // Update total cell
+                    const totalCell = cells[5];
+                    const totalVal = parseFloat(totalCell.getAttribute('data-price'));
+                    totalCell.textContent = formatPrice(convertCurrency(totalVal, 'USD', getUserCurrency()), getUserCurrency());
+                }
+            }
+            // Update the total amount and delivery fee
+            updateTotalWithDeliveryFee();
+            // Update redeem label
+            if (canRedeem) {
+                const discountInCurrency = convertCurrency(discountAmount, 'ALL', getUserCurrency());
+                const redeemBox = document.getElementById('redeem-points-box');
+                if (redeemBox && redeemBox.style.display !== 'none') {
+                    redeemBox.innerHTML = `<label><input type="checkbox" id="redeem-points-checkbox"${pointsRedeemed ? ' checked' : ''}> Redeem 500 points for ${formatPrice(discountInCurrency, getUserCurrency())} off</label>`;
+                    document.getElementById('redeem-points-checkbox').addEventListener('change', function(e) {
+                        pointsRedeemed = e.target.checked;
+                        renderCartAndTotals();
+                        localStorage.setItem('redeemPoints', pointsRedeemed ? 'yes' : 'no');
+                        location.reload();
+                    });
+                }
+            }
+        });
       </script>
     <!-- Food Order Section End -->
 

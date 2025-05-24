@@ -5,8 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     setupCartListeners();
 });
 
-// Cart array to store items
-let cart = [];
+// Bulletproof global cart variable
+window.cart = window.cart || [];
+var cart = window.cart;
 
 // Load cart from localStorage
 function loadCart() {

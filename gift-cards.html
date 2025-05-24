@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Cards - Food School</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="currency.js" defer></script>
+    <script src="cart.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .gift-cards-header {
+            text-align: center;
+            margin: 40px 0 20px 0;
+        }
+        .gift-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+        }
+        .gift-card-box {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .gift-card-box:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(255,62,62,0.12);
+        }
+        .gift-card-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff3e3e;
+            margin-bottom: 0.5rem;
+        }
+        .gift-card-points {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .btn-buy-gift {
+            background: #ff3e3e;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-buy-gift:hover {
+            background: #c0392b;
+        }
+        .currency-list {
+            margin-bottom: 0.5rem;
+        }
+        .currency-list span {
+            display: inline-block;
+            margin: 0 6px;
+            font-size: 1rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Section Start -->
+    <header class="navbar">
+        <nav id="site-top-nav" class="navbar-menu navbar-fixed-top">
+            <div class="container">
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="index.html" title="Logo">
+                        <img src="../assets/img/logo.png" alt="Logo" class="logo">
+                    </a>
+                </div>
+                <!-- Main Menu -->
+                <div class="menu">
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="categories.html"><i class="fas fa-list"></i> Categories</a></li>
+                        <li><a class="hvr-underline-from-center" href="foods.html"><i class="fas fa-utensils"></i> Foods</a></li>
+                        <li><a class="hvr-underline-from-center" href="order.html"><i class="fas fa-shopping-bag"></i> Order</a></li>
+                        <li><a class="hvr-underline-from-center" href="nutrition-scanner.html"><i class="fas fa-camera"></i> Scan Food</a></li>
+                        <li><a class="hvr-underline-from-center" href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                        <li><a class="hvr-underline-from-center active" href="gift-cards.html"><i class="fas fa-gift"></i> Gift Cards <span class="new-label">NEW</span></a></li>
+                        <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user-circle"></i> Account</a></li>
+                        <li class="cart-container">
+                            <a href="#" class="cart-link" id="cart-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span id="cart-count">0</span>
+                            </a>
+                            <div id="cart-content" class="cart-content">
+                                <h3 class="text-center">Shopping Cart</h3>
+                                <table class="cart-table" border="0">
+                                    <tr>
+                                        <th>Food</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Qty</th>
+                                        <th>Total</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </table>
+                                <a href="order.html" class="btn-primary"><i class="fas fa-check-circle"></i> Checkout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- Navigation Section End -->
+    <section>
+        <div class="gift-cards-header">
+            <h1><i class="fas fa-gift"></i> Gift Cards Shop</h1>
+            <p>Buy a gift card, earn points, and treat yourself or a friend! 🎁✨</p>
+        </div>
+        <div class="gift-cards-grid" id="giftCardsGrid">
+            <!-- Gift cards will be rendered here by JS -->
+        </div>
+    </section>
+    <script>
+    // Supported currencies
+    const currencies = ['USD', 'EUR', 'ALL'];
+
+    // Supabase client
+    const supabaseClient = window.supabase.createClient(
+        'https://psyaqtxljrwwkeyqpocb.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzeWFxdHhsanJ3d2tleXFwb2NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjMzNjAsImV4cCI6MjA2MzIzOTM2MH0.Ea_9EvuJpK6R5ncPuL8jce5hOsRrPAf9dY3cGZSOFKc'
+    );
+
+    async function fetchGiftCards() {
+        const grid = document.getElementById('giftCardsGrid');
+        grid.innerHTML = '<div style="text-align:center;width:100%">Loading gift cards...</div>';
+        const { data, error } = await supabaseClient
+            .from('gift_cards')
+            .select('*')
+            .eq('active', true)
+            .order('amount', { ascending: true });
+        if (error) {
+            grid.innerHTML = '<div style="color:red;text-align:center">Failed to load gift cards.</div>';
+            return;
+        }
+        renderGiftCards(data);
+    }
+
+    function renderGiftCards(giftCards) {
+        const grid = document.getElementById('giftCardsGrid');
+        grid.innerHTML = '';
+        giftCards.forEach(card => {
+            const currencyList = currencies.map(cur => {
+                const val = formatPrice(convertCurrency(card.amount, 'ALL', cur), cur);
+                return `<span>${val}</span>`;
+            }).join('');
+            const box = document.createElement('div');
+            box.className = 'gift-card-box';
+            box.innerHTML = `
+                <div class="gift-card-amount">${formatPrice(card.amount, 'ALL')}</div>
+                <div class="currency-list">${currencyList}</div>
+                <div class="gift-card-points">Earn <b>${card.points}</b> points</div>
+                <div style="margin-bottom: 0.5rem; color: #888; font-size: 0.95rem;">${card.description || ''}</div>
+                <button class="btn-buy-gift" onclick="buyGiftCard(${card.id}, ${card.amount}, ${card.points})">Buy</button>
+            `;
+            grid.appendChild(box);
+        });
+    }
+
+    function buyGiftCard(cardId, amount, points) {
+        // Redirect to payment page with gift card info
+        window.location.href = `payment.html?gift_card_id=${cardId}&amount=${amount}&points=${points}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchGiftCards);
+    </script>
+</body>
+</html> 

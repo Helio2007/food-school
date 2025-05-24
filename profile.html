@@ -497,6 +497,7 @@
             <h1>My Account</h1>
             <button id="logout-btn" class="logout-btn">Logout</button>
         </div>
+        <div id="user-points-box" style="display:none; margin-bottom:20px; padding:16px; background:#f8f9fa; border-radius:8px; text-align:center; font-size:18px; font-weight:bold; color:#ff3b3b;"></div>
         
         <div id="error-message" class="error-message"></div>
         <div id="success-message" class="success-message"></div>
@@ -739,6 +740,9 @@
                 
                 console.log('User logged in:', user.id);
                 currentUser = user;
+                
+                // Fetch and display user points
+                fetchAndShowUserPoints(user.id);
                 
                 // Call function to create profile if missing
                 await createProfileIfMissing(user.id);
@@ -1233,6 +1237,26 @@
             }
         }
         // --- END NEW ---
+
+        // Fetch user points from Supabase and display
+        async function fetchAndShowUserPoints(userId) {
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('user_points')
+                    .select('points')
+                    .eq('user_id', userId)
+                    .single();
+                const box = document.getElementById('user-points-box');
+                if (error || !data) {
+                    box.style.display = 'none';
+                    return;
+                }
+                box.textContent = `Your Points: ${data.points}`;
+                box.style.display = '';
+            } catch (e) {
+                document.getElementById('user-points-box').style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html> 
